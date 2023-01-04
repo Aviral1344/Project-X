@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    list-style: none;
+    background-size:cover;
+}
+.navbar
+{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 4%;
+}
+
+.navbar h1{
+    color: #ffffff;
+    cursor: pointer;
+    margin-right: auto;
+}
+
+.navbar li, a, button, p
+{
+    font-weight: 500;
+    font-size: 15px;
+    color: #edf0f1;
+    text-decoration: none;
+}
+
+.navbar button{
+    padding: 9px 25px;
+    background-color: rgba(255, 255, 255, 0);
+    border: 1px solid seashell;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border-radius: 10px;
+}
+
+.navbar button:hover{
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+}
+
+.nav_links
+{
+    list-style: none;
+
+}
+
+.nav_links li{
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+.nav_links li a{
+    transition: all 0.4s ease;
+}
+
+.nav_links li a:hover{
+    font-size: 17px;
+}
+
+header
+{
+    font-size: 30px;
+    font-weight: 600;
+    color: #232836;
+    text-align: center;
+}
+
+.heart-icon:hover{
+    color: rgb(255, 19, 105);
+}
+

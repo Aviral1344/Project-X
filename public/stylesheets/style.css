@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    list-style: none;
+    background-size: cover;
+}
+
+.navbar
+{
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 4%;
+}
+
+.navbar h1{
+    color: #ffffff;
+    cursor: pointer;
+    margin-right: auto;
+}
+
+.navbar li, a, button, p
+{
+    font-weight: 500;
+    font-size: 15px;
+    color: #edf0f1;
+    text-decoration: none;
+}
+
+.navbar button{
+    padding: 9px 25px;
+    background-color: rgba(255, 255, 255, 0);
+    border: 1px solid seashell;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border-radius: 10px;
+}
+
+.navbar button:hover{
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+}
+
+.nav_links
+{
+    list-style: none;
+
+}
+
+.nav_links li{
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+.nav_links li a{
+    transition: all 0.4s ease;
+}
+
+.nav_links li a:hover{
+    font-size: 17px;
+}
+
+.container
+{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("/images/bg4.jpg");
+    background-size: cover;
+}
+
+.form
+{
+    position: absolute;
+    height : 630px;
+    max-width: 430px;
+    width: 100%;
+    padding: 20px;
+    margin-top: 50px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+header
+{
+    font-size: 30px;
+    font-weight: 600;
+    color: rgb(0, 0, 0);
+    text-align: center;
+}
+
+form
+{
+    margin-top: 30px;
+    height: 320px;
+}
+
+.form .field
+{
+    position: relative;
+    height: 50px;
+    width: 100%;
+    margin-top: 14px;
+    border-radius: 10px;
+}
+
+.field input
+{
+    outline: none;
+    height: 100%;
+    width : 100%;
+    border: 0px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 400;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0);
+    background-color: rgba(255, 255, 255, 0.226);
+}
+
+.field input::content
+{
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.eye-icon
+{
+    position: absolute;
+    top: 34%;
+    right: 4%;
+    font-size: 18px;
+    color: rgb(255, 254, 254);
+    cursor: pointer;
+}
+
+.field button
+{
+    background-color: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0);
+    color: white;
+    height: 100%;
+    width : 100%;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.field button:hover
+{
+    color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 6px;
+}
+
+.form-link0{
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.form-link
+{
+    position: absolute;
+    bottom: 190px;
+    align-items: center;
+    margin-left: 10px;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 200;
+    color: rgba(72, 67, 67, 0.796);
+    
+}
+
+.field.button-field{
+    position: absolute;
+    padding-left: 20px;
+    padding-right: 20px;
+    max-width: 430px;
+    width: 100%;
+    left: 0px;
+    bottom: 225px;
+}
+ 
+.form a
+{
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.form a:hover
+{
+    text-decoration: underline;
+}
+
+.bottom{
+    position: absolute;
+    max-width: 430px;
+    width: 100%;
+    left: 0px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 10px;
+    bottom: 20px;
+}
+
+.or p{
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 18px;
+    text-align: center;
+    font-weight: 400;
+    
+}
+
+
+.provider a:hover{
+    text-decoration: none;
+}
+
+.provider button{
+    border: 0px;
+}
+
+.icons{
+    position: absolute;
+    left: 20px;
+    color: rgb(255, 255, 255);
+}
+
+.provider button a span{
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.facebook{
+    background-color:rgba(66, 103, 178, 0.8);
+    
+}
+
+.google{
+    background-color:rgba(219, 69, 55, 0.8);
+}
+
+
+
+
