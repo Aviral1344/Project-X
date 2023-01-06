@@ -33,14 +33,14 @@ app.use(session({
 
 app.use((req,res,next)=>{
     if(req.session.user && req.cookies.user_sid){
-        res.redirect("/index")
+        return res.render("index.ejs")
     }
     next()
 })
 
 var sessionChecker =(req,res,next)=>{
     if(req.session.user && req.cookies.user_sid){
-        res.redirect("/index")
+        res.render("index.ejs")
     }
     else{
         next()
@@ -51,7 +51,6 @@ app.get("/",sessionChecker,(req,res) =>{
     res.redirect("/login")
 })
 
-
 app.get("/index", (req,res)=>{
     if(req.session.user && req.cookies.user_sid){
         res.render("index.ejs")
@@ -60,6 +59,17 @@ app.get("/index", (req,res)=>{
         res.redirect("/login")
     }
 })
+
+app.get('/logout',(req, res)=>{
+    if(req.session.user && req.cookies.user_sid){
+        console.log("logging out")
+        req.session.destroy();
+        return res.redirect("/")
+    }
+    console.log("failed to logout")
+    return res.redirect("/login")
+});
+
 
 app.route("/login").get(sessionChecker, (req,res)=>{
     res.render("login.ejs")
@@ -70,7 +80,7 @@ app.post("/login", async(req, res) =>{
 
     try{
         const user= await User.findOne({"email": data}).exec();
-        if(!user){
+        if(user == null){
             res.redirect("/login")
             return
         }
@@ -84,7 +94,7 @@ app.post("/login", async(req, res) =>{
             else{
                 console.log("Password correct")
                 req.session.user = user;
-                res.redirect("/");
+                res.redirect("/index");
                 return
             }
         });
@@ -118,8 +128,8 @@ app.post("/signup",(req,res) =>{
         }
         else{
             console.log(docs)
-            app.set(session.user= user)
-            res.redirect("/")
+            req.session.user= user
+            res.redirect("/index")
             return
         }
     })
