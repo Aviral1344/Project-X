@@ -33,6 +33,17 @@ boxiconAnimation(heart, "bx-heart", "bxs-heart")
 const chat= document.querySelectorAll(".chat-icon");
 boxiconAnimation(chat, "bx-message-square-dots", "bxs-message-square-dots")
 
+const user= document.querySelectorAll(".user-icon");
+boxiconAnimation(user,"bx-user-circle","bxs-user-circle")
+
+const sub= document.getElementById("click");
+sub.addEventListener("click",()=>{
+    const subm=document.querySelectorAll(".submenu");
+    subm.forEach(click =>{
+        click.classList.toggle("hidden")
+    })
+})
+
 
 
 
