@@ -7,16 +7,17 @@
     font-family: 'Poppins', sans-serif;
     list-style: none;
     background-size:cover;
+    background-attachment: fixed;
 }
 .navbar
 {
-    position: absolute;
+    position: fixed;
     width: 100%;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
     padding: 5px 4%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 1);
 }
 
 .navbar h1{
@@ -31,16 +32,6 @@
     font-size: 15px;
     color: #edf0f1;
     text-decoration: none;
-}
-
-.navbar button{
-    border: 0px;
-    background-color: rgba(255, 255, 255, 0);
-}
-
-.navbar button:hover{
-    background-color: rgba(255, 255, 255, 0);
-    border-radius: 6px;
 }
 
 .nav_links
@@ -70,24 +61,27 @@ header
 .submenu{
     position: absolute;
     right: 4%;
-    top: 110%;
+    top: 145%;
     background-color: rgba(0, 0, 0, 0.583);
     padding-right: 10px;
     padding-left: 10px;
     border-radius: 10px;
     width: 230px;
+    max-height: 300px;
+    visibility: hidden;
     transition-duration: 0.4s;
-    
+    opacity: 0;
 }
 
 .submenu:hover{
-    max-height: 300px;
+    
     overflow: hidden;
 }
 
 .hidden{
-    max-height: 0px;
-    overflow: hidden;
+    visibility: visible;
+    opacity: 1;
+    top: 110%;
 }
 
 .submenu-link{
@@ -118,12 +112,58 @@ header
     font-weight: 600;
 }
 
+.popular{
+    position: absolute;
+    top: 13%;
+    left: 17%;
+    display: flex;
+    justify-content: space-between;
+    width: 700px;
+
+}
+
+.popular h1{
+    color: #ffffff;
+}
+
+.toggle{
+    position: inherit;
+    left: 40%;
+    display: flex;
+    width: 240px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 20px;
+    justify-content: space-between;
+    border: 1px solid rgb(255, 255, 255);
+}
+
+.link{
+    width: 120px;
+    text-align: center;
+    border-radius: 20px;
+    transition: all 0.4s ease-in;
+}
+
+.link:hover{
+    background-color: rgb(255, 255, 255);
+}
+
+.link:hover a{
+    color: rgb(0, 0, 0);
+}
+
+.toggle .link a{
+    line-height: 40px;
+    font-weight: 600;
+}
+
 .search{
     outline: none;
-    height: 40px;
-    width: 300px;
+    height: 38px;
+    width: 400px;
     border: 0px;
-    background-color: rgba(0, 0, 0, 0.393);
+    background-color: rgba(156, 156, 156, 0.4);
     border-radius: 10px;
     padding-left: 20px;
     padding-right: 40px;
@@ -134,4 +174,88 @@ header
     position: relative;
     right: 37px;
     top: 7px;
+}
+
+.search-results h2{
+    color: #ffffff;
+}
+
+main{
+    position: absolute;
+    right: 5%;
+    width: 1200px;
+    top: 20%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: rgba(255, 255, 255, 0);
+    justify-content:flex-start;
+}
+
+.movie{
+    width: 250px;
+    margin: 15px;
+    max-height: 450px;
+    border-radius: 10px;
+    box-shadow: 0.2px 4px 5px rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.movie img{
+    width: 100%;
+    max-height: 300px;
+}
+
+.movie-info{
+    color: azure;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 10px;
+}
+
+.movie-info h3{
+    margin-top: 0;
+}
+
+.movie-info span{
+    position: absolute;
+    right: 4%;
+    top: 2%;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+.movie-info span.green{
+    background-color: rgb(0, 171, 0);
+}
+
+.movie-info span.yellow{
+    background-color: rgb(174, 166, 0);
+}
+
+.movie-info span.orange{
+    background-color: rgb(180, 90, 0);
+}
+
+.movie-info span.red{
+    background-color: rgb(175, 0, 0);
+}
+
+.overview{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(255, 255, 255);
+    padding: 5px;
+    max-height: 100%;
+    transform: translateY(101%);
+    transition: all 0.4s ease;
+}
+
+.movie:hover .overview{
+    transform: translateY(0);
 }

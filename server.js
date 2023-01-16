@@ -128,7 +128,7 @@ app.post("/signup",(req,res) =>{
         }
         else{
             console.log(docs)
-            req.session.user= user
+            req.session.user= data
             res.redirect("/index")
             return
         }
