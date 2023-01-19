@@ -1,3 +1,5 @@
+
+
 function boxiconAnimation(icon0, icon1, icon2){
     icon0.forEach(icon =>{
         icon.addEventListener("mouseover",() =>
@@ -24,8 +26,8 @@ function boxiconAnimation(icon0, icon1, icon2){
 const home= document.querySelectorAll(".home-icon");
 boxiconAnimation(home, "bx-home-alt-2", "bxs-home-alt-2")
 
-const search= document.querySelectorAll(".search-icon");
-boxiconAnimation(search, "bx-search-alt-2", "bxs-search-alt-2")
+const searchi= document.querySelectorAll(".search-icon");
+boxiconAnimation(searchi, "bx-search-alt-2", "bxs-search-alt-2")
 
 const heart= document.querySelectorAll(".heart-icon");
 boxiconAnimation(heart, "bx-heart", "bxs-heart")
@@ -44,28 +46,50 @@ sub.addEventListener("click",()=>{
     })
 })
 
+const logout= document.getElementById("logout");
+logout.addEventListener("click", (req,res)=>{
+    res.redirect("/logout");
+})
+
 const API_KEY="api_key=0595eb5831f66cec3590e055439032cd";
 const BASE_URL="https://api.themoviedb.org/3"
 const IMAGE_URL= "https://image.tmdb.org/t/p/w500"
 
 const main= document.getElementById("main");
-const upper= document.getElementById("upper")
 
 
-const movies= document.getElementById("movies");
-movies.addEventListener("click", async ()=>{
-    const TVresponse= await fetch("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
-    const data= await TVresponse.json();
-    console.log(data.results);
-    show(data.results);
-})
+//FRONT PAGE CONTENT(Popular Movies and TV shows)
+
+
 
 const tv= document.getElementById("tv");
 tv.addEventListener("click", async ()=>{
     const TVresponse= await fetch("https://api.themoviedb.org/3/tv/popular?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
     const data= await TVresponse.json();
     console.log(data.results);
-    show(data.results)
+    const data1= data.results
+    main.innerHTML= "";
+    data1.forEach(movie =>{
+        const {name, poster_path, vote_average, overview}= movie;
+
+        const movieEl= document.createElement("div");
+        movieEl.classList.add("movie");
+
+        movieEl.innerHTML= ` 
+                <img src="${IMAGE_URL+poster_path}" alt="${name}">
+
+                <div class="movie-info">
+                    <h3>${name}</h3>
+                    <span class="${VoteColour(vote_average)}">${vote_average}</span>
+                </div>
+                <div class="overview">
+                    <h3>Overview</h3>
+                    ${overview};
+                </div>
+        `
+        
+        main.appendChild(movieEl);
+    })
 })
 
 
@@ -73,37 +97,10 @@ async function popularMovies(){
     const TVresponse= await fetch("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
     const data= await TVresponse.json();
     console.log(data.results);
-    show(data.results);
-}
-popularMovies();
-//Search results
-const searching= document.getElementById("search");
-searching.addEventListener("click", async() => {
-    const movie= document.getElementById("movie-name").value;
-    upper.innerHTML="";
-
-    const upperEl=document.createElement("div");
-    upperEl.classList.add("search-results")
-    
-    upperEl.innerHTML=`
-            <h2>Search Results for '${movie}'</h2>
-    `
-    upper.appendChild(upperEl);
-    const API_URL = "https://api.themoviedb.org/3/search/multi?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&query="
-    
-    const movie_url= API_URL+ movie;
-    console.log(movie_url);
-    const response= await fetch(movie_url);
-    const data= await response.json();
-    console.log(data.results);
-    show(data.results)
-})
-
-function show(data){
+    const data1= data.results;
     main.innerHTML= "";
-    data.forEach(movie =>{
+    data1.forEach(movie =>{
         const {title, poster_path, vote_average, overview}= movie;
-
         const movieEl= document.createElement("div");
         movieEl.classList.add("movie");
 
@@ -119,10 +116,239 @@ function show(data){
                     ${overview};
                 </div>
         `
-        
         main.appendChild(movieEl);
     })
 }
+popularMovies();
+const movies= document.getElementById("movies");
+movies.addEventListener("click", async ()=>{
+    const TVresponse= await fetch("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
+    const data= await TVresponse.json();
+    console.log(data.results);
+    const data1= data.results;
+    main.innerHTML= "";
+    data1.forEach(movie =>{
+        const {title, poster_path, vote_average, overview}= movie;
+
+        const movieEl= document.createElement("div");
+        movieEl.classList.add("movie");
+
+        movieEl.innerHTML= ` 
+                <img src="${IMAGE_URL+poster_path}" alt="${title} onerror=this.src="/images/bg4.jpg">
+
+                <div class="movie-info">
+                    <h3>${title}</h3>
+                    <span class="${VoteColour(vote_average)}">${vote_average}</span>
+                </div>
+                <div class="overview">
+                    <h3>Overview</h3>
+                    ${overview};
+                </div>
+        `
+        main.appendChild(movieEl);
+    })
+})
+
+const upper= document.getElementById("upper");
+
+//Searching... 
+const searching= document.getElementById("search");
+searching.addEventListener("click", ()=> {
+    const value= document.getElementById("movie-name").value;
+    search("https://api.themoviedb.org/3/search/movie?api_key=0595eb5831f66cec3590e055439032cd&query=",value);
+    
+})
+
+async function search(API_URL, movie){
+        upper.innerHTML="";
+    
+        const upperEl=document.createElement("div");
+        upperEl.classList.add("search-toggle")
+        upperEl.innerHTML=`
+                <div class="link whitebg" id="sMovie"><a href="#">Movies</a></div>
+                <div class="link" id="stv"><a href="#">TV Shows</a></div>
+                <div class="link" id="speople"><a href="#">People</a></div>
+                <div class="link" id="scollection"><a href="#">Collection</a></div>
+                <div class="link" id="scompanies"><a href="#">Companies</a></div>
+                <div class="link" id="skeyword"><a href="#">Keyword</a></div>
+        `;
+        upper.appendChild(upperEl);
+
+        const movie_url= API_URL+ movie;
+        console.log(movie_url);
+        const response= await fetch(movie_url);
+        const data= await response.json();
+        console.log(data.results);
+    
+        const data1= data.results;
+        main.innerHTML= "";
+        data1.forEach(movie =>{
+            const {title, poster_path, vote_average, overview}= movie;
+    
+            const movieEl= document.createElement("div");
+            movieEl.classList.add("movie");
+    
+            movieEl.innerHTML= ` 
+                    <img src="${IMAGE_URL+poster_path}" alt="${title}">
+    
+                    <div class="movie-info">
+                        <h3>${title}</h3>
+                        <span class="${VoteColour(vote_average)}">${vote_average}</span>
+                    </div>
+                    <div class="overview">
+                        <h3>Overview</h3>
+                        ${overview};
+                    </div>
+            `
+            main.appendChild(movieEl);
+        })
+
+    const movies= document.getElementById("sMovie");
+    const tv= document.getElementById("stv");
+    const people= document.getElementById("speople");
+    const coll= document.getElementById("scollection");
+    const comp= document.getElementById("scompanies");
+    const Keyword= document.getElementById("skeyword");
+    
+    movies.addEventListener("click",()=>{
+        const value= document.getElementById("movie-name").value;
+        search("https://api.themoviedb.org/3/search/movie?api_key=0595eb5831f66cec3590e055439032cd&query=",value);
+    })
+
+    tv.addEventListener("click",async ()=>{
+        const value= document.getElementById("movie-name").value;
+        const TVresponse= await fetch("https://api.themoviedb.org/3/search/tv?api_key=0595eb5831f66cec3590e055439032cd&query="+ value);
+        const data= await TVresponse.json();
+        console.log(data.results);
+        const data1= data.results;
+        main.innerHTML= "";
+        data1.forEach(movie =>{
+            const {name, poster_path, vote_average, overview}= movie;
+    
+            const movieEl= document.createElement("div");
+            movieEl.classList.add("movie");
+    
+            movieEl.innerHTML= ` 
+                    <img src="${IMAGE_URL+poster_path}" alt="${name}">
+    
+                    <div class="movie-info">
+                        <h3>${name}</h3>
+                        <span class="${VoteColour(vote_average)}">${vote_average}</span>
+                    </div>
+                    <div class="overview">
+                        <h3>Overview</h3>
+                        ${overview};
+                    </div>
+            `
+            
+            main.appendChild(movieEl);
+        })
+    })
+
+    people.addEventListener("click", async()=>{
+        const value= document.getElementById("movie-name").value;
+        const movie_url= "https://api.themoviedb.org/3/search/person?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
+        console.log(movie_url);
+        const response= await fetch(movie_url);
+        const data= await response.json();
+        console.log(data.results);
+    
+        const data1= data.results;
+        main.innerHTML= "";
+        data1.forEach(movie =>{
+            const {name, profile_path}= movie;
+            const movieEl= document.createElement("div");
+            movieEl.classList.add("movie");
+    
+            movieEl.innerHTML= ` 
+                    <img src="${IMAGE_URL+ profile_path}" alt="${name}">
+    
+                    <div class="movie-info">
+                        <h3>${name}</h3>
+                    </div>
+            `
+            main.appendChild(movieEl);
+        })
+    })
+
+    coll.addEventListener("click", async()=>{
+        const value= document.getElementById("movie-name").value;
+        const movie_url= "https://api.themoviedb.org/3/search/collection?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
+        console.log(movie_url);
+        const response= await fetch(movie_url);
+        const data= await response.json();
+        console.log(data.results);
+    
+        const data1= data.results;
+        main.innerHTML= "";
+        data1.forEach(movie =>{
+            const {name, poster_path}= movie;
+            const movieEl= document.createElement("div");
+            movieEl.classList.add("movie");
+    
+            movieEl.innerHTML= ` 
+                    <img src="${IMAGE_URL+ poster_path}" alt="${name}">
+    
+                    <div class="movie-info">
+                        <h3>${name}</h3>
+                    </div>
+            `
+            main.appendChild(movieEl);
+        })
+    })
+
+    comp.addEventListener("click",async ()=>{
+        const value= document.getElementById("movie-name").value;
+        const movie_url= "https://api.themoviedb.org/3/search/company?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
+        console.log(movie_url);
+        const response= await fetch(movie_url);
+        const data= await response.json();
+        console.log(data.results);
+    
+        const data1= data.results;
+        main.innerHTML= "";
+        data1.forEach(movie =>{
+            const {name, logo_path}= movie;
+            const movieEl= document.createElement("div");
+            movieEl.classList.add("movie");
+    
+            movieEl.innerHTML= ` 
+                    <img src="${IMAGE_URL+logo_path}" alt="${name}">
+    
+                    <div class="movie-info">
+                        <h3>${name}</h3>
+                    </div>
+            `
+            main.appendChild(movieEl);
+        })
+    })
+
+    Keyword.addEventListener("click",async ()=>{
+
+        const value= document.getElementById("movie-name").value;
+        const movie_url= "https://api.themoviedb.org/3/search/keyword?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
+        console.log(movie_url);
+        const response= await fetch(movie_url);
+        const data= await response.json();
+        console.log(data.results);
+    
+        const data1= data.results;
+        main.innerHTML= "";
+        data1.forEach(movie =>{
+            const {name}= movie;
+            const movieEl= document.createElement("div");
+            movieEl.classList.add("movie");
+    
+            movieEl.innerHTML= ` 
+                    <div class="movie-info">
+                        <h3>${name}</h3>
+                    </div>
+            `
+            main.appendChild(movieEl);
+        })
+    })
+    
+    }
 
 function VoteColour(vote){
     if(vote>=7.5){
