@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width= device-width, initial-scale=1.0">
+        <title>Konekt- Login</title>
+        <link rel="stylesheet" href="/stylesheets/style.css"><!-- CSS import-->
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'><!--bixicons icon import -->
+    </head>
+    <body>
+        <div class="navbar">
+            <h1>Konekt</h1>
+            <nav>
+                <ul class="nav_links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#"></a></li>
+                </ul>
+            </nav>
+            <a class="bruh" href="/signup"><button>SIGNUP</button></a>
+        </div>
+        
+        <section class="container forms">
+
+            <div class="form login">
+                <header>Login</header>
+                <form action="/login" method="POST">
+
+                    <br>
+                    <div class="field input-field">
+                        <input type="text" placeholder="Email or Username"  class="input" id="emailL" name="entry" required>
+                    </div>
+
+                    <br>
+                    <div class="field input-field">
+                        <input type="password" placeholder="Password" class="password" id="PwdL" name="passwordL" required>
+                        <i class='bx bxs-hide eye-icon'></i>
+                        <div class="form-link0">
+                            <span><a href="#" class="forgot-pass"><i>Forgot password?</i></a></span>
+                        </div>
+                    </div>
+                    <div class="field button-field">
+                        <button id="logbtn">Login</button>
+                    </div>
+
+                    <div class="form-link">
+                        <span><i>Don't have an account?</i> <a href="/signup" class="link signup-link">Signup</a></span>
+                    </div> 
+                </form>
+                <div class="bottom">
+                    <div class="or"><p><i>-  Or  -</i></p></div>
+                    <div class="media-options provider">
+                        <button class="field facebook">
+                            <a href="#" ><i class='bx bxl-facebook-circle bx-sm icons' ></i><span>Continue with Facebook</span></a>
+                        </button>
+                        <button class="field google">
+                            <a href="#"><i class='bx bxl-google bx-sm icons' ></i><span>Continue with Google</span></a>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <script src="/javascripts/script.js"></script>
+
+    </body>
+
+</html>
+

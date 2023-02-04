@@ -2,7 +2,6 @@
 const express = require("express");
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
-const morgan= require("morgan")
 const app= express();
 const session= require("express-session")
 const User= require("./models/user")
@@ -14,8 +13,8 @@ app.listen(8000,() => {
 })
 
 var path= require("path");
+const { Console } = require("console");
 
-app.use(morgan("dev"))
 app.use(express.static(path.join(__dirname,"public")))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
@@ -59,17 +58,6 @@ app.get("/index", (req,res)=>{
         res.redirect("/login")
     }
 })
-
-app.get('/logout',(req, res)=>{
-    if(req.session.user && req.cookies.user_sid){
-        console.log("logging out")
-        req.session.destroy();
-        return res.redirect("/")
-    }
-    console.log("failed to logout")
-    return res.redirect("/login")
-});
-
 
 app.route("/login").get(sessionChecker, (req,res)=>{
     res.render("login.ejs")
@@ -134,3 +122,19 @@ app.post("/signup",(req,res) =>{
         }
     })
 })
+
+app.route("/logout").get(sessionChecker, (req,res)=>{
+    res.render("logout.ejs")
+})
+
+app.post("/logout",(req, res)=>{
+    console.log("LOGGING OUT")
+    if(req.session.user && req.cookies.user_sid){
+        console.log("logging out")
+        req.session.destroy();
+        return res.redirect("/")
+    }
+    console.log("failed to logout")
+    return res.redirect("/login")
+});
+

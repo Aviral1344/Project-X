@@ -12,7 +12,7 @@
         <div class="popular" id="upper">
             <h1>What's Popular</h1>
             <div class="toggle">
-                <div class="link" id="movies"><a href="#">Movies</a></div>
+                <div class="link whitebg" id="movies"><a href="#">Movies</a></div>
                 <div class="link" id="tv"><a href="#">TV Shows</a></div>
             </div>
         </div>
@@ -90,8 +90,14 @@
                 </div>
             </div>
 
+            <div class="pagination">
+                <div class="prev" id="prev"><</div>
+                <div class="curr" id="curr"">1</div>
+                <div class="next" id="next">></div>
+            </div>
+            
         </main>
-
+        
         <div class="navbar">
             <h1>Konekt</h1> 
             <nav>
@@ -112,15 +118,11 @@
                         <li><a href="#" class="submenu-link"><i class='bx bxs-user-circle bx-sm'></i><p>Profile</p><span>></span></a></li>
                         <li><a href="#" class="submenu-link"><i class='bx bxs-cog bx-sm'></i><p> Settings</p><span>></span></a></li>
                         <li><a href="#" class="submenu-link"><i class='bx bxs-help-circle bx-sm' ></i><p>Help & Support</p><span>></span></a></li>
-                        <li><a href= "logout.ejs" id="logout" class="submenu-link"><i class='bx bxs-log-out-circle bx-sm' ></i><p>Logout</p><span>></span></a></li>
+                        <li><a href= "/logout" id="logout" class="submenu-link"><i class='bx bxs-log-out-circle bx-sm' ></i><p><form action="/logout" method="POST"><button>Logout</button></form></p><span>></span></a></li>
                     </ul>
                 </div>
             </nav>
         </div>
-        
-
-        
-
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="/javascripts/index.js"></script>

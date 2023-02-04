@@ -64,11 +64,17 @@ const main= document.getElementById("main");
 
 const tv= document.getElementById("tv");
 tv.addEventListener("click", async ()=>{
+    whitebgremover2(tv);
     const TVresponse= await fetch("https://api.themoviedb.org/3/tv/popular?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
     const data= await TVresponse.json();
     console.log(data.results);
     const data1= data.results
-    main.innerHTML= "";
+    main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">1</div>
+            <div class="next" id="next">></div>
+        </div>`;
     data1.forEach(movie =>{
         const {name, poster_path, vote_average, overview}= movie;
 
@@ -92,13 +98,20 @@ tv.addEventListener("click", async ()=>{
     })
 })
 
-
+const movies= document.getElementById("movies");
 async function popularMovies(){
+    whitebgremover2(movies);
     const TVresponse= await fetch("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
     const data= await TVresponse.json();
     console.log(data.results);
     const data1= data.results;
-    main.innerHTML= "";
+
+    main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">1</div>
+            <div class="next" id="next">></div>
+        </div>`;
     data1.forEach(movie =>{
         const {title, poster_path, vote_average, overview}= movie;
         const movieEl= document.createElement("div");
@@ -120,13 +133,19 @@ async function popularMovies(){
     })
 }
 popularMovies();
-const movies= document.getElementById("movies");
+
 movies.addEventListener("click", async ()=>{
+    whitebgremover2(movies);
     const TVresponse= await fetch("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
     const data= await TVresponse.json();
     console.log(data.results);
     const data1= data.results;
-    main.innerHTML= "";
+    main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">1</div>
+            <div class="next" id="next">></div>
+        </div>`;
     data1.forEach(movie =>{
         const {title, poster_path, vote_average, overview}= movie;
 
@@ -148,6 +167,23 @@ movies.addEventListener("click", async ()=>{
         main.appendChild(movieEl);
     })
 })
+
+function whitebgremover2(str){
+    const movies= document.getElementById("movies");
+    const tv= document.getElementById("tv");
+
+    const cat= [movies, tv];
+    cat.forEach(element =>{
+        if(element==str){
+            str.classList.add("whitebg");
+        }
+        else{
+            if(element.classList.contains("whitebg")){
+                element.classList.remove("whitebg");
+            }
+        }
+    })
+}
 
 const upper= document.getElementById("upper");
 
@@ -171,6 +207,7 @@ async function search(API_URL, movie){
                 <div class="link" id="scollection"><a href="#">Collection</a></div>
                 <div class="link" id="scompanies"><a href="#">Companies</a></div>
                 <div class="link" id="skeyword"><a href="#">Keyword</a></div>
+                
         `;
         upper.appendChild(upperEl);
 
@@ -181,7 +218,12 @@ async function search(API_URL, movie){
         console.log(data.results);
     
         const data1= data.results;
-        main.innerHTML= "";
+        main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">1</div>
+            <div class="next" id="next">></div>
+        </div>`;
         data1.forEach(movie =>{
             const {title, poster_path, vote_average, overview}= movie;
     
@@ -211,17 +253,24 @@ async function search(API_URL, movie){
     const Keyword= document.getElementById("skeyword");
     
     movies.addEventListener("click",()=>{
+        whitebgremover(movies);
         const value= document.getElementById("movie-name").value;
         search("https://api.themoviedb.org/3/search/movie?api_key=0595eb5831f66cec3590e055439032cd&query=",value);
     })
 
     tv.addEventListener("click",async ()=>{
+        whitebgremover(tv);
         const value= document.getElementById("movie-name").value;
         const TVresponse= await fetch("https://api.themoviedb.org/3/search/tv?api_key=0595eb5831f66cec3590e055439032cd&query="+ value);
         const data= await TVresponse.json();
         console.log(data.results);
         const data1= data.results;
-        main.innerHTML= "";
+        main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">1</div>
+            <div class="next" id="next">></div>
+        </div>`;
         data1.forEach(movie =>{
             const {name, poster_path, vote_average, overview}= movie;
     
@@ -246,6 +295,7 @@ async function search(API_URL, movie){
     })
 
     people.addEventListener("click", async()=>{
+        whitebgremover(people);
         const value= document.getElementById("movie-name").value;
         const movie_url= "https://api.themoviedb.org/3/search/person?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
         console.log(movie_url);
@@ -254,7 +304,12 @@ async function search(API_URL, movie){
         console.log(data.results);
     
         const data1= data.results;
-        main.innerHTML= "";
+        main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">1</div>
+            <div class="next" id="next">></div>
+        </div>`;
         data1.forEach(movie =>{
             const {name, profile_path}= movie;
             const movieEl= document.createElement("div");
@@ -272,6 +327,7 @@ async function search(API_URL, movie){
     })
 
     coll.addEventListener("click", async()=>{
+        whitebgremover(coll);
         const value= document.getElementById("movie-name").value;
         const movie_url= "https://api.themoviedb.org/3/search/collection?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
         console.log(movie_url);
@@ -280,7 +336,12 @@ async function search(API_URL, movie){
         console.log(data.results);
     
         const data1= data.results;
-        main.innerHTML= "";
+        main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">1</div>
+            <div class="next" id="next">></div>
+        </div>`;
         data1.forEach(movie =>{
             const {name, poster_path}= movie;
             const movieEl= document.createElement("div");
@@ -298,6 +359,7 @@ async function search(API_URL, movie){
     })
 
     comp.addEventListener("click",async ()=>{
+        whitebgremover(comp);
         const value= document.getElementById("movie-name").value;
         const movie_url= "https://api.themoviedb.org/3/search/company?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
         console.log(movie_url);
@@ -306,7 +368,12 @@ async function search(API_URL, movie){
         console.log(data.results);
     
         const data1= data.results;
-        main.innerHTML= "";
+        main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">1</div>
+            <div class="next" id="next">></div>
+        </div>`;
         data1.forEach(movie =>{
             const {name, logo_path}= movie;
             const movieEl= document.createElement("div");
@@ -324,7 +391,7 @@ async function search(API_URL, movie){
     })
 
     Keyword.addEventListener("click",async ()=>{
-
+        whitebgremover(Keyword);
         const value= document.getElementById("movie-name").value;
         const movie_url= "https://api.themoviedb.org/3/search/keyword?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
         console.log(movie_url);
@@ -348,7 +415,30 @@ async function search(API_URL, movie){
         })
     })
     
-    }
+}
+
+
+function whitebgremover(str){
+    const movies= document.getElementById("sMovie");
+    const tv= document.getElementById("stv");
+    const people= document.getElementById("speople");
+    const coll= document.getElementById("scollection");
+    const comp= document.getElementById("scompanies");
+    const Keyword= document.getElementById("skeyword");
+
+    const cat= [movies, tv, people, coll, comp, Keyword];
+    cat.forEach(element =>{
+        if(element==str){
+            str.classList.add("whitebg");
+        }
+        else{
+            if(element.classList.contains("whitebg")){
+                element.classList.remove("whitebg");
+            }
+        }
+    })
+}
+
 
 function VoteColour(vote){
     if(vote>=7.5){

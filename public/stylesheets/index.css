@@ -162,6 +162,10 @@ header
     background-color:aquamarine;
 }
 
+.whitebg a{
+    color: #232836;
+}
+
 .link{
     width: 120px;
     text-align: center;
@@ -172,10 +176,6 @@ header
 
 .link2 a{
     font-size: 15px;
-}
-
-.link:hover{
-    background-color: rgb(255, 255, 255);
 }
 
 .link:hover a{
@@ -222,6 +222,42 @@ main{
     flex-wrap: wrap;
     background-color: rgba(255, 255, 255, 0);
     justify-content:flex-start;
+}
+
+.pagination{
+    position: absolute;
+    height: 80px;
+    bottom: -80px;
+    left: 510px;
+    display: flex;
+    color: white;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.prev{
+    margin-right: 30px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.prev:hover{
+    color: aqua;
+}
+
+.next{
+    margin-left: 30px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.next:hover{
+    color: aqua;
+}
+
+.curr{
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .movie{
@@ -292,3 +328,4 @@ main{
 .movie:hover .overview{
     transform: translateY(0);
 }
+
