@@ -1,5 +1,3 @@
-
-
 function boxiconAnimation(icon0, icon1, icon2){
     icon0.forEach(icon =>{
         icon.addEventListener("mouseover",() =>
@@ -46,11 +44,6 @@ sub.addEventListener("click",()=>{
     })
 })
 
-const logout= document.getElementById("logout");
-logout.addEventListener("click", (req,res)=>{
-    res.redirect("/logout");
-})
-
 const API_KEY="api_key=0595eb5831f66cec3590e055439032cd";
 const BASE_URL="https://api.themoviedb.org/3"
 const IMAGE_URL= "https://image.tmdb.org/t/p/w500"
@@ -60,35 +53,138 @@ const main= document.getElementById("main");
 
 //FRONT PAGE CONTENT(Popular Movies and TV shows)
 
+//pagination
 
 
-const tv= document.getElementById("tv");
-tv.addEventListener("click", async ()=>{
-    whitebgremover2(tv);
-    const TVresponse= await fetch("https://api.themoviedb.org/3/tv/popular?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
+
+
+
+var currentPage =1;
+var nextPage= 2;
+var prevPage= 3;
+var lasturl= "";
+var totalPages= 100;
+
+async function popularMovies(url){
+    whitebgremover2(movies);
+    const TVresponse= await fetch(url);
+    lasturl= url; 
+
     const data= await TVresponse.json();
+
+    const upper= document.getElementById("upper");
+    
     console.log(data.results);
-    const data1= data.results
+    currentPage =data.page;
+    nextPage= currentPage + 1;
+    prevPage= currentPage - 1;
+    totalPages=data.total_pages;
+    const data1= data.results;
+
     main.innerHTML= `
         <div class="pagination">
             <div class="prev" id="prev"><</div>
-            <div class="curr" id="curr"">1</div>
+            <div class="curr" id="curr"">${currentPage}</div>
+            <div class="next" id="next">></div>
+        </div>`; 
+    data1.forEach(movie =>{
+        const {title, poster_path, vote_average, overview, id}= movie;
+        const movieEl= document.createElement("div");
+        movieEl.classList.add("movie");
+
+        movieEl.innerHTML= ` 
+                <img src="${IMAGE_URL+poster_path}" alt="${title}">
+
+                <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
+
+                <div class="movie-info">
+                    <h3>${title}</h3>
+                    <span class="${VoteColour(vote_average)}">${vote_average}</span>
+                </div>
+                <div class="${id}" id="overview">
+                    <h3>Overview</h3>
+                    ${overview};
+                </div>
+        `
+        main.appendChild(movieEl);
+    })
+    upper.scrollIntoView({behavior: 'smooth'});
+    const heart= document.querySelectorAll(".heart-icon");
+    boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
+    function pageCall(page){
+        let urlSplit= lasturl.split("?");
+        let queryparams= urlSplit[1].split("&");
+        let key= queryparams[queryparams.length -1].split("=");
+        if(key[0]!="page"){
+            let url = lasturl + "&page=" + page;
+            popularMovies(url);
+        }
+        else{
+            key[1]= page.toString();
+            let a= key.join("=");
+            queryparams[queryparams.length-1]=a;
+            let b= queryparams.join("&");
+            let url = urlSplit[0] + "?" + b;
+            popularMovies(url);
+        }
+    }
+
+    const prev= document.getElementById("prev");
+    prev.addEventListener("click", ()=>{
+        console.log("prev called");
+        if(prevPage>0){
+            pageCall(prevPage);
+        }
+    })
+
+    const next= document.getElementById("next");
+    next.addEventListener("click", ()=>{
+        console.log("next called");
+        if(nextPage<= totalPages){
+            pageCall(nextPage);
+        }
+    })
+
+    
+}
+
+async function popularTv(url){
+    lasturl= url;
+    const TVresponse= await fetch(url);
+    const data= await TVresponse.json();
+    console.log(data.results);
+
+    const upper= document.getElementById("upper");
+    
+    console.log(data.results);
+    currentPage =data.page;
+    nextPage= currentPage + 1;
+    prevPage= currentPage - 1;
+    totalPages=data.total_pages;
+
+    const data1= data.results
+
+    main.innerHTML= `
+        <div class="pagination">
+            <div class="prev" id="prev"><</div>
+            <div class="curr" id="curr"">${currentPage}</div>
             <div class="next" id="next">></div>
         </div>`;
     data1.forEach(movie =>{
-        const {name, poster_path, vote_average, overview}= movie;
+        const {name, poster_path, vote_average, overview,id}= movie;
 
         const movieEl= document.createElement("div");
         movieEl.classList.add("movie");
 
         movieEl.innerHTML= ` 
                 <img src="${IMAGE_URL+poster_path}" alt="${name}">
-
+                <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
                 <div class="movie-info">
                     <h3>${name}</h3>
                     <span class="${VoteColour(vote_average)}">${vote_average}</span>
                 </div>
-                <div class="overview">
+                <div class="${id}" id="overview">
                     <h3>Overview</h3>
                     ${overview};
                 </div>
@@ -96,77 +192,62 @@ tv.addEventListener("click", async ()=>{
         
         main.appendChild(movieEl);
     })
-})
+    upper.scrollIntoView({behavior: 'smooth'});
+    const heart= document.querySelectorAll(".heart-icon");
+    boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
+    function pageCall(page){
+        let urlSplit= lasturl.split("?");
+        let queryparams= urlSplit[1].split("&");
+        let key= queryparams[queryparams.length -1].split("=");
+        if(key[0]!="page"){
+            let url = lasturl + "&page=" + page;
+            popularTv(url);
+        }
+        else{
+            key[1]= page.toString();
+            let a= key.join("=");
+            queryparams[queryparams.length-1]=a;
+            let b= queryparams.join("&");
+            let url = urlSplit[0] + "?" + b;
+            popularTv(url);
+        }
+    }
+
+    const prev= document.getElementById("prev");
+    prev.addEventListener("click", ()=>{
+        console.log("prev called");
+        if(prevPage>0){
+            pageCall(prevPage);
+        }
+    })
+
+    const next= document.getElementById("next");
+    next.addEventListener("click", ()=>{
+        console.log("next called");
+        if(nextPage<= totalPages){
+            pageCall(nextPage);
+        }
+    })
+
+}
 
 const movies= document.getElementById("movies");
-async function popularMovies(){
-    whitebgremover2(movies);
-    const TVresponse= await fetch("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
-    const data= await TVresponse.json();
-    console.log(data.results);
-    const data1= data.results;
-
-    main.innerHTML= `
-        <div class="pagination">
-            <div class="prev" id="prev"><</div>
-            <div class="curr" id="curr"">1</div>
-            <div class="next" id="next">></div>
-        </div>`;
-    data1.forEach(movie =>{
-        const {title, poster_path, vote_average, overview}= movie;
-        const movieEl= document.createElement("div");
-        movieEl.classList.add("movie");
-
-        movieEl.innerHTML= ` 
-                <img src="${IMAGE_URL+poster_path}" alt="${title}">
-
-                <div class="movie-info">
-                    <h3>${title}</h3>
-                    <span class="${VoteColour(vote_average)}">${vote_average}</span>
-                </div>
-                <div class="overview">
-                    <h3>Overview</h3>
-                    ${overview};
-                </div>
-        `
-        main.appendChild(movieEl);
-    })
-}
-popularMovies();
-
+var url= "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US";
+popularMovies(url);
 movies.addEventListener("click", async ()=>{
     whitebgremover2(movies);
-    const TVresponse= await fetch("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1");
-    const data= await TVresponse.json();
-    console.log(data.results);
-    const data1= data.results;
-    main.innerHTML= `
-        <div class="pagination">
-            <div class="prev" id="prev"><</div>
-            <div class="curr" id="curr"">1</div>
-            <div class="next" id="next">></div>
-        </div>`;
-    data1.forEach(movie =>{
-        const {title, poster_path, vote_average, overview}= movie;
-
-        const movieEl= document.createElement("div");
-        movieEl.classList.add("movie");
-
-        movieEl.innerHTML= ` 
-                <img src="${IMAGE_URL+poster_path}" alt="${title} onerror=this.src="/images/bg4.jpg">
-
-                <div class="movie-info">
-                    <h3>${title}</h3>
-                    <span class="${VoteColour(vote_average)}">${vote_average}</span>
-                </div>
-                <div class="overview">
-                    <h3>Overview</h3>
-                    ${overview};
-                </div>
-        `
-        main.appendChild(movieEl);
-    })
+    popularMovies(url);
 })
+
+
+var url2= "https://api.themoviedb.org/3/tv/popular?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1";
+const tv= document.getElementById("tv");
+tv.addEventListener("click", async ()=>{
+    whitebgremover2(tv);
+    popularTv(url2);
+})
+
 
 function whitebgremover2(str){
     const movies= document.getElementById("movies");
@@ -184,6 +265,34 @@ function whitebgremover2(str){
         }
     })
 }
+
+
+
+function pageCall(page){
+    let urlSplit= lasturl.split("?");
+    let queryparams= urlSplit[1].split("&");
+    let key= queryparams[queryparams.length -1].split("=");
+    if(key[0]!="page"){
+        let url = lasturl + "&page=" + page;
+        popularMovies(url);
+    }
+    else{
+        key[1]= page.toString();
+        let a= key.join("=");
+        queryparams[queryparams.length-1]=a;
+        let b= queryparams.join("&");
+        let url = urlSplit[0] + "?" + b;
+        popularMovies(url);
+    }
+}
+
+const next= document.getElementById("next")
+next.addEventListener("click", ()=>{
+    console.log("next called");
+    if(nextPage<= totalPages){
+        pageCall(nextPage);
+    }
+})
 
 const upper= document.getElementById("upper");
 
@@ -205,8 +314,6 @@ async function search(API_URL, movie){
                 <div class="link" id="stv"><a href="#">TV Shows</a></div>
                 <div class="link" id="speople"><a href="#">People</a></div>
                 <div class="link" id="scollection"><a href="#">Collection</a></div>
-                <div class="link" id="scompanies"><a href="#">Companies</a></div>
-                <div class="link" id="skeyword"><a href="#">Keyword</a></div>
                 
         `;
         upper.appendChild(upperEl);
@@ -225,19 +332,21 @@ async function search(API_URL, movie){
             <div class="next" id="next">></div>
         </div>`;
         data1.forEach(movie =>{
-            const {title, poster_path, vote_average, overview}= movie;
+            const {title, poster_path, vote_average, overview, id}= movie;
     
             const movieEl= document.createElement("div");
             movieEl.classList.add("movie");
     
             movieEl.innerHTML= ` 
                     <img src="${IMAGE_URL+poster_path}" alt="${title}">
+
+                    <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
     
                     <div class="movie-info">
                         <h3>${title}</h3>
                         <span class="${VoteColour(vote_average)}">${vote_average}</span>
                     </div>
-                    <div class="overview">
+                    <div class="${id}", id="overview">
                         <h3>Overview</h3>
                         ${overview};
                     </div>
@@ -249,8 +358,6 @@ async function search(API_URL, movie){
     const tv= document.getElementById("stv");
     const people= document.getElementById("speople");
     const coll= document.getElementById("scollection");
-    const comp= document.getElementById("scompanies");
-    const Keyword= document.getElementById("skeyword");
     
     movies.addEventListener("click",()=>{
         whitebgremover(movies);
@@ -272,19 +379,21 @@ async function search(API_URL, movie){
             <div class="next" id="next">></div>
         </div>`;
         data1.forEach(movie =>{
-            const {name, poster_path, vote_average, overview}= movie;
+            const {name, poster_path, vote_average, overview, id}= movie;
     
             const movieEl= document.createElement("div");
             movieEl.classList.add("movie");
     
             movieEl.innerHTML= ` 
                     <img src="${IMAGE_URL+poster_path}" alt="${name}">
+
+                    <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
     
                     <div class="movie-info">
                         <h3>${name}</h3>
                         <span class="${VoteColour(vote_average)}">${vote_average}</span>
                     </div>
-                    <div class="overview">
+                    <div class="${id}" id="overview">
                         <h3>Overview</h3>
                         ${overview};
                     </div>
@@ -292,6 +401,8 @@ async function search(API_URL, movie){
             
             main.appendChild(movieEl);
         })
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
     })
 
     people.addEventListener("click", async()=>{
@@ -317,6 +428,8 @@ async function search(API_URL, movie){
     
             movieEl.innerHTML= ` 
                     <img src="${IMAGE_URL+ profile_path}" alt="${name}">
+
+                    <div class="fav2"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
     
                     <div class="movie-info">
                         <h3>${name}</h3>
@@ -324,6 +437,8 @@ async function search(API_URL, movie){
             `
             main.appendChild(movieEl);
         })
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
     })
 
     coll.addEventListener("click", async()=>{
@@ -343,78 +458,33 @@ async function search(API_URL, movie){
             <div class="next" id="next">></div>
         </div>`;
         data1.forEach(movie =>{
-            const {name, poster_path}= movie;
+            const {name, poster_path, overview, id}= movie;
             const movieEl= document.createElement("div");
             movieEl.classList.add("movie");
     
             movieEl.innerHTML= ` 
                     <img src="${IMAGE_URL+ poster_path}" alt="${name}">
-    
-                    <div class="movie-info">
-                        <h3>${name}</h3>
-                    </div>
-            `
-            main.appendChild(movieEl);
-        })
-    })
 
-    comp.addEventListener("click",async ()=>{
-        whitebgremover(comp);
-        const value= document.getElementById("movie-name").value;
-        const movie_url= "https://api.themoviedb.org/3/search/company?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
-        console.log(movie_url);
-        const response= await fetch(movie_url);
-        const data= await response.json();
-        console.log(data.results);
-    
-        const data1= data.results;
-        main.innerHTML= `
-        <div class="pagination">
-            <div class="prev" id="prev"><</div>
-            <div class="curr" id="curr"">1</div>
-            <div class="next" id="next">></div>
-        </div>`;
-        data1.forEach(movie =>{
-            const {name, logo_path}= movie;
-            const movieEl= document.createElement("div");
-            movieEl.classList.add("movie");
-    
-            movieEl.innerHTML= ` 
-                    <img src="${IMAGE_URL+logo_path}" alt="${name}">
+                    <div class="fav2"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
     
                     <div class="movie-info">
                         <h3>${name}</h3>
                     </div>
-            `
-            main.appendChild(movieEl);
-        })
-    })
 
-    Keyword.addEventListener("click",async ()=>{
-        whitebgremover(Keyword);
-        const value= document.getElementById("movie-name").value;
-        const movie_url= "https://api.themoviedb.org/3/search/keyword?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
-        console.log(movie_url);
-        const response= await fetch(movie_url);
-        const data= await response.json();
-        console.log(data.results);
-    
-        const data1= data.results;
-        main.innerHTML= "";
-        data1.forEach(movie =>{
-            const {name}= movie;
-            const movieEl= document.createElement("div");
-            movieEl.classList.add("movie");
-    
-            movieEl.innerHTML= ` 
-                    <div class="movie-info">
-                        <h3>${name}</h3>
+                    </div>
+                    <div class="${id}" id="overview">
+                        <h3>Overview</h3>
+                        ${overview};
                     </div>
             `
             main.appendChild(movieEl);
         })
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
     })
-    
+    const heart= document.querySelectorAll(".heart-icon");
+    boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
 }
 
 
@@ -423,10 +493,8 @@ function whitebgremover(str){
     const tv= document.getElementById("stv");
     const people= document.getElementById("speople");
     const coll= document.getElementById("scollection");
-    const comp= document.getElementById("scompanies");
-    const Keyword= document.getElementById("skeyword");
 
-    const cat= [movies, tv, people, coll, comp, Keyword];
+    const cat= [movies, tv, people, coll];
     cat.forEach(element =>{
         if(element==str){
             str.classList.add("whitebg");
