@@ -21,6 +21,7 @@ function boxiconAnimation(icon0, icon1, icon2){
     })
 }
 
+
 const home= document.querySelectorAll(".home-icon");
 boxiconAnimation(home, "bx-home-alt-2", "bxs-home-alt-2")
 
@@ -232,6 +233,7 @@ async function popularTv(url){
 
 }
 
+//fetching popular movies
 const movies= document.getElementById("movies");
 var url= "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US";
 popularMovies(url);
@@ -240,9 +242,9 @@ movies.addEventListener("click", async ()=>{
     popularMovies(url);
 })
 
-
-var url2= "https://api.themoviedb.org/3/tv/popular?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1";
+//fetching popular tv shows
 const tv= document.getElementById("tv");
+var url2= "https://api.themoviedb.org/3/tv/popular?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1";
 tv.addEventListener("click", async ()=>{
     whitebgremover2(tv);
     popularTv(url2);
@@ -267,36 +269,8 @@ function whitebgremover2(str){
 }
 
 
-
-function pageCall(page){
-    let urlSplit= lasturl.split("?");
-    let queryparams= urlSplit[1].split("&");
-    let key= queryparams[queryparams.length -1].split("=");
-    if(key[0]!="page"){
-        let url = lasturl + "&page=" + page;
-        popularMovies(url);
-    }
-    else{
-        key[1]= page.toString();
-        let a= key.join("=");
-        queryparams[queryparams.length-1]=a;
-        let b= queryparams.join("&");
-        let url = urlSplit[0] + "?" + b;
-        popularMovies(url);
-    }
-}
-
-const next= document.getElementById("next")
-next.addEventListener("click", ()=>{
-    console.log("next called");
-    if(nextPage<= totalPages){
-        pageCall(nextPage);
-    }
-})
-
+//Searching function...
 const upper= document.getElementById("upper");
-
-//Searching... 
 const searching= document.getElementById("search");
 searching.addEventListener("click", ()=> {
     const value= document.getElementById("movie-name").value;
@@ -305,30 +279,43 @@ searching.addEventListener("click", ()=> {
 })
 
 async function search(API_URL, movie){
-        upper.innerHTML="";
+    upper.innerHTML="";
     
-        const upperEl=document.createElement("div");
-        upperEl.classList.add("search-toggle")
-        upperEl.innerHTML=`
-                <div class="link whitebg" id="sMovie"><a href="#">Movies</a></div>
-                <div class="link" id="stv"><a href="#">TV Shows</a></div>
-                <div class="link" id="speople"><a href="#">People</a></div>
-                <div class="link" id="scollection"><a href="#">Collection</a></div>
-                
+    const upperEl=document.createElement("div");
+    upperEl.classList.add("search-toggle")
+    upperEl.innerHTML=`
+        <div class="link whitebg" id="sMovie"><a href="#">Movies</a></div>
+        <div class="link" id="stv"><a href="#">TV Shows</a></div>
+        <div class="link" id="speople"><a href="#">People</a></div>
+        <div class="link" id="scollection"><a href="#">Collection</a></div>
         `;
-        upper.appendChild(upperEl);
+    upper.appendChild(upperEl);
 
-        const movie_url= API_URL+ movie;
-        console.log(movie_url);
-        const response= await fetch(movie_url);
+    const movie_url= API_URL+ movie;
+    searchMovie(movie_url);
+
+    const movies= document.getElementById("sMovie");
+    const tv= document.getElementById("stv");
+    const people= document.getElementById("speople");
+    const coll= document.getElementById("scollection");
+
+    async function searchMovie(url){
+        lasturl = url;
+        console.log(url);
+        const response= await fetch(url);
         const data= await response.json();
         console.log(data.results);
+
+        currentPage =data.page;
+        nextPage= currentPage + 1;
+        prevPage= currentPage - 1;
+        totalPages=data.total_pages;
     
         const data1= data.results;
         main.innerHTML= `
         <div class="pagination">
             <div class="prev" id="prev"><</div>
-            <div class="curr" id="curr"">1</div>
+            <div class="curr" id="curr"">${currentPage}</div>
             <div class="next" id="next">></div>
         </div>`;
         data1.forEach(movie =>{
@@ -354,28 +341,58 @@ async function search(API_URL, movie){
             main.appendChild(movieEl);
         })
 
-    const movies= document.getElementById("sMovie");
-    const tv= document.getElementById("stv");
-    const people= document.getElementById("speople");
-    const coll= document.getElementById("scollection");
+        function pageCall(page){
+            let urlSplit= lasturl.split("?");
+            let queryparams= urlSplit[1].split("&");
+            let key= queryparams[queryparams.length -1].split("=");
+            if(key[0]!="page"){
+                let url = lasturl + "&page=" + page;
+                popularTv(url);
+            }
+            else{
+                key[1]= page.toString();
+                let a= key.join("=");
+                queryparams[queryparams.length-1]=a;
+                let b= queryparams.join("&");
+                let url = urlSplit[0] + "?" + b;
+                popularTv(url);
+            }
+        }
     
-    movies.addEventListener("click",()=>{
-        whitebgremover(movies);
-        const value= document.getElementById("movie-name").value;
-        search("https://api.themoviedb.org/3/search/movie?api_key=0595eb5831f66cec3590e055439032cd&query=",value);
-    })
+        const prev= document.getElementById("prev");
+        prev.addEventListener("click", ()=>{
+            console.log("prev called");
+            if(prevPage>0){
+                pageCall(prevPage);
+            }
+        })
+    
+        const next= document.getElementById("next");
+        next.addEventListener("click", ()=>{
+            console.log("next called");
+            if(nextPage<= totalPages){
+                pageCall(nextPage);
+            }
+        })
 
-    tv.addEventListener("click",async ()=>{
-        whitebgremover(tv);
-        const value= document.getElementById("movie-name").value;
-        const TVresponse= await fetch("https://api.themoviedb.org/3/search/tv?api_key=0595eb5831f66cec3590e055439032cd&query="+ value);
+    }
+
+    async function searchTV(url){
+        lasturl = url;
+        const TVresponse= await fetch(url);
         const data= await TVresponse.json();
         console.log(data.results);
+
+        currentPage =data.page;
+        nextPage= currentPage + 1;
+        prevPage= currentPage - 1;
+        totalPages=data.total_pages;
+
         const data1= data.results;
         main.innerHTML= `
         <div class="pagination">
             <div class="prev" id="prev"><</div>
-            <div class="curr" id="curr"">1</div>
+            <div class="curr" id="curr"">${currentPage}</div>
             <div class="next" id="next">></div>
         </div>`;
         data1.forEach(movie =>{
@@ -403,22 +420,59 @@ async function search(API_URL, movie){
         })
         const heart= document.querySelectorAll(".heart-icon");
         boxiconAnimation(heart, "bx-heart", "bxs-heart");
-    })
 
-    people.addEventListener("click", async()=>{
-        whitebgremover(people);
-        const value= document.getElementById("movie-name").value;
-        const movie_url= "https://api.themoviedb.org/3/search/person?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
-        console.log(movie_url);
-        const response= await fetch(movie_url);
+        function pageCall(page){
+            let urlSplit= lasturl.split("?");
+            let queryparams= urlSplit[1].split("&");
+            let key= queryparams[queryparams.length -1].split("=");
+            if(key[0]!="page"){
+                let url = lasturl + "&page=" + page;
+                popularTv(url);
+            }
+            else{
+                key[1]= page.toString();
+                let a= key.join("=");
+                queryparams[queryparams.length-1]=a;
+                let b= queryparams.join("&");
+                let url = urlSplit[0] + "?" + b;
+                popularTv(url);
+            }
+        }
+    
+        const prev= document.getElementById("prev");
+        prev.addEventListener("click", ()=>{
+            console.log("prev called");
+            if(prevPage>0){
+                pageCall(prevPage);
+            }
+        })
+    
+        const next= document.getElementById("next");
+        next.addEventListener("click", ()=>{
+            console.log("next called");
+            if(nextPage<= totalPages){
+                pageCall(nextPage);
+            }
+        })
+
+    }
+
+    async function searchPeople(url){
+        lasturl = url;
+        const response= await fetch(url);
         const data= await response.json();
         console.log(data.results);
+
+        currentPage =data.page;
+        nextPage= currentPage + 1;
+        prevPage= currentPage - 1;
+        totalPages=data.total_pages;
     
         const data1= data.results;
         main.innerHTML= `
         <div class="pagination">
             <div class="prev" id="prev"><</div>
-            <div class="curr" id="curr"">1</div>
+            <div class="curr" id="curr"">${currentPage}</div>
             <div class="next" id="next">></div>
         </div>`;
         data1.forEach(movie =>{
@@ -437,16 +491,46 @@ async function search(API_URL, movie){
             `
             main.appendChild(movieEl);
         })
-        const heart= document.querySelectorAll(".heart-icon");
-        boxiconAnimation(heart, "bx-heart", "bxs-heart");
-    })
 
-    coll.addEventListener("click", async()=>{
-        whitebgremover(coll);
-        const value= document.getElementById("movie-name").value;
-        const movie_url= "https://api.themoviedb.org/3/search/collection?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
-        console.log(movie_url);
-        const response= await fetch(movie_url);
+        function pageCall(page){
+            let urlSplit= lasturl.split("?");
+            let queryparams= urlSplit[1].split("&");
+            let key= queryparams[queryparams.length -1].split("=");
+            if(key[0]!="page"){
+                let url = lasturl + "&page=" + page;
+                popularTv(url);
+            }
+            else{
+                key[1]= page.toString();
+                let a= key.join("=");
+                queryparams[queryparams.length-1]=a;
+                let b= queryparams.join("&");
+                let url = urlSplit[0] + "?" + b;
+                popularTv(url);
+            }
+        }
+    
+        const prev= document.getElementById("prev");
+        prev.addEventListener("click", ()=>{
+            console.log("prev called");
+            if(prevPage>0){
+                pageCall(prevPage);
+            }
+        })
+    
+        const next= document.getElementById("next");
+        next.addEventListener("click", ()=>{
+            console.log("next called");
+            if(nextPage<= totalPages){
+                pageCall(nextPage);
+            }
+        })
+    }
+
+
+    async function searchCollection(url){
+        lasturl = url;
+        const response= await fetch(url);
         const data= await response.json();
         console.log(data.results);
     
@@ -479,6 +563,74 @@ async function search(API_URL, movie){
             `
             main.appendChild(movieEl);
         })
+
+        function pageCall(page){
+            let urlSplit= lasturl.split("?");
+            let queryparams= urlSplit[1].split("&");
+            let key= queryparams[queryparams.length -1].split("=");
+            if(key[0]!="page"){
+                let url = lasturl + "&page=" + page;
+                popularTv(url);
+            }
+            else{
+                key[1]= page.toString();
+                let a= key.join("=");
+                queryparams[queryparams.length-1]=a;
+                let b= queryparams.join("&");
+                let url = urlSplit[0] + "?" + b;
+                popularTv(url);
+            }
+        }
+    
+        const prev= document.getElementById("prev");
+        prev.addEventListener("click", ()=>{
+            console.log("prev called");
+            if(prevPage>0){
+                pageCall(prevPage);
+            }
+        })
+    
+        const next= document.getElementById("next");
+        next.addEventListener("click", ()=>{
+            console.log("next called");
+            if(nextPage<= totalPages){
+                pageCall(nextPage);
+            }
+        })
+    }
+    
+    
+    
+    movies.addEventListener("click",()=>{
+        whitebgremover(movies);
+        const value= document.getElementById("movie-name").value;
+        const url= "https://api.themoviedb.org/3/search/movie?api_key=0595eb5831f66cec3590e055439032cd&query="+value;
+        searchMovie(url);
+    })
+
+    tv.addEventListener("click",async ()=>{
+        whitebgremover(tv);
+        const value= document.getElementById("movie-name").value;
+        const url = "https://api.themoviedb.org/3/search/tv?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
+        searchTV(url);
+    })
+
+    people.addEventListener("click", async()=>{
+        whitebgremover(people);
+        const value= document.getElementById("movie-name").value;
+        const url= "https://api.themoviedb.org/3/search/person?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
+        console.log(url);
+        searchPeople(url);
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
+    })
+
+    coll.addEventListener("click", async()=>{
+        whitebgremover(coll);
+        const value= document.getElementById("movie-name").value;
+        const url= "https://api.themoviedb.org/3/search/collection?api_key=0595eb5831f66cec3590e055439032cd&query="+ value;
+        console.log(url);
+        searchCollection(url);
         const heart= document.querySelectorAll(".heart-icon");
         boxiconAnimation(heart, "bx-heart", "bxs-heart");
     })
