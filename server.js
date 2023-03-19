@@ -14,6 +14,7 @@ app.listen(8000,() => {
 
 var path= require("path");
 const { Console } = require("console");
+const { Router } = require("express");
 
 app.use(express.static(path.join(__dirname,"public")))
 app.use(bodyParser.urlencoded({extended: true}))
@@ -46,22 +47,67 @@ var sessionChecker =(req,res,next)=>{
     }
 }
 
+var currentUser;
+
+
+app.get("/logout", sessionChecker, async(req,res)=>{
+    console.log("logout post called");
+    var data= "logout@movieflix.com"
+    var password= "loggingout@1344";
+
+    try{
+        const user= await User.findOne({"email": data}).exec();
+        if(user == null){
+            req.session.destroy;
+            res.redirect("/login")
+            return;
+        }
+        user.comparePassword(password,(error, match)=>{
+            if(!match){
+                console.log("Incorrect password");
+                res.redirect("/login");
+                return;
+            }
+            else{
+                console.log("Password correct")
+                req.session.user = user;
+                currentUser= user;
+                console.log("login :");
+                console.log(currentUser);
+                res.render("index.ejs", {curr: currentUser});
+                return;
+            }
+        });
+    }
+    catch(e){
+        console.log(e)
+    }
+})
+
+app.route("/logout", async(req, res)=>{
+    
+})
+
 app.get("/",sessionChecker,(req,res) =>{
     res.redirect("/login")
 })
 
+
 app.get("/index", (req,res)=>{
     if(req.session.user && req.cookies.user_sid){
-        res.render("index.ejs")
+        res.render("index.ejs", {curr: currentUser});
     }
     else{
         res.redirect("/login")
     }
 })
 
+
 app.route("/login").get(sessionChecker, (req,res)=>{
     res.render("login.ejs")
 })
+
+
 app.post("/login", async(req, res) =>{
     var data= req.body.entry;
     var password= req.body.passwordL;
@@ -69,21 +115,23 @@ app.post("/login", async(req, res) =>{
     try{
         const user= await User.findOne({"email": data}).exec();
         if(user == null){
-            res.redirect("/login")
-            return
+            res.redirect("/login");
+            return;
         }
-        console.log(user);
         user.comparePassword(password,(error, match)=>{
             if(!match){
                 console.log("Incorrect password");
                 res.redirect("/login");
-                return
+                return;
             }
             else{
                 console.log("Password correct")
                 req.session.user = user;
-                res.redirect("/index");
-                return
+                currentUser= user;
+                console.log("login :");
+                console.log(currentUser);
+                res.render("index.ejs", {curr: currentUser});
+                return;
             }
         });
     }
@@ -123,18 +171,5 @@ app.post("/signup",(req,res) =>{
     })
 })
 
-app.route("/logout").get(sessionChecker, (req,res)=>{
-    res.render("logout.ejs")
-})
 
-app.post("/logout",(req, res)=>{
-    console.log("LOGGING OUT")
-    if(req.session.user && req.cookies.user_sid){
-        console.log("logging out")
-        req.session.destroy();
-        return res.redirect("/")
-    }
-    console.log("failed to logout")
-    return res.redirect("/login")
-});
 

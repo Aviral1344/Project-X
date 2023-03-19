@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/stylesheets/index.css"><!-- CSS import-->
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'><!--bixicons icon import -->
     </head>
-    <body background="/images/bg7.jpg">
+    <body background="/images/bg9.jpg">
         <div class="popular" id="upper">
             <h1>What's Popular</h1>
             <div class="toggle">
@@ -54,16 +54,13 @@
                         </div>
                     </li>
                     <li><a href="/"><i class='bx bx-home-alt-2 bx-sm home-icon'></i></a></li>
-                    <li><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></a></li>
-                    <li><a href="#"><i class='bx bx-message-square-dots bx-sm chat-icon'></i></a></li>
                     <li><a href="#" id="click"><i class='bx bx-user-circle bx-sm user-icon'></i></i></a></li>
                 </ul>
                 <div class="submenu" id="submenu">
                     <ul>
-                        <li><a href="#" class="submenu-link"><i class='bx bxs-user-circle bx-sm'></i><p>Profile</p><span>></span></a></li>
-                        <li><a href="#" class="submenu-link"><i class='bx bxs-cog bx-sm'></i><p> Settings</p><span>></span></a></li>
-                        <li><a href="#" class="submenu-link"><i class='bx bxs-help-circle bx-sm' ></i><p>Help & Support</p><span>></span></a></li>
-                        <li><a href= "/logout" id="logout" class="submenu-link"><i class='bx bxs-log-out-circle bx-sm' ></i><p><form action="/logout" method="POST"><button>Logout</button></form></p><span>></span></a></li>
+                        <li><a href="#" class="submenu-link"><i class='bx bxs-user-circle bx-sm'></i><p><%= curr.username %></p><span>></span></a></li>
+                        <li><a href="#" class="submenu-link"><i class='bx bx-heart bx-sm heart-icon' ></i><p>Favourites</p><span>></span></a></li>
+                        <li><form action="/logout" method="GET"><a href= "/logout" id="logout" class="submenu-link"><i class='bx bxs-log-out-circle bx-sm' ></i><p>Logout</p><span>></span></a></form></li>
                     </ul>
                 </div>
             </nav>
