@@ -160,12 +160,11 @@ app.post("/signup",(req,res) =>{
     
     data.save((err,docs)=>{
         if(err){
-            res.redirect("/signup")
+            res.redirect("/signup");
         }
         else{
             console.log(docs)
-            req.session.user= data
-            res.redirect("/index")
+            res.redirect("/")
             return
         }
     })
