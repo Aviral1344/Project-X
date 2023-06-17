@@ -453,5 +453,39 @@ main{
     background-color: rgb(175, 0, 0);
 }
 
+#tags{
+    position: fixed;
+    top: 22%;
+    left: 2%;
+    height: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 150px;
+    padding: 8px;
+    border-radius: 10px;
+    flex-wrap: wrap;
+    justify-content:center
+}
 
+.tag{
+    font-size: 12px;
+    color:white;
+    padding:2px;
+    margin:5px;
+    padding-left:10px;
+    border-radius: 4px;
+    transition: 0.2s;
+    font-weight: 500;
+    cursor: pointer;
+}
 
+.tag-selected{
+    color: rgb(255, 0, 0);
+}
+
+.tag:hover{
+    color:rgb(255, 150, 3);
+}
+
+.tag-selected:hover{
+    color: rgb(255, 0, 0);
+}

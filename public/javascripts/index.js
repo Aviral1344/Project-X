@@ -21,6 +21,223 @@ function boxiconAnimation(icon0, icon1, icon2){
     })
 }
 
+const tvgenres=[
+    {
+      "id": 10759,
+      "name": "Action & Adventure"
+    },
+    {
+      "id": 16,
+      "name": "Animation"
+    },
+    {
+      "id": 35,
+      "name": "Comedy"
+    },
+    {
+      "id": 80,
+      "name": "Crime"
+    },
+    {
+      "id": 99,
+      "name": "Documentary"
+    },
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 10751,
+      "name": "Family"
+    },
+    {
+      "id": 10762,
+      "name": "Kids"
+    },
+    {
+      "id": 9648,
+      "name": "Mystery"
+    },
+    {
+      "id": 10763,
+      "name": "News"
+    },
+    {
+      "id": 10764,
+      "name": "Reality"
+    },
+    {
+      "id": 10765,
+      "name": "Sci-Fi & Fantasy"
+    },
+    {
+      "id": 10766,
+      "name": "Soap"
+    },
+    {
+      "id": 10767,
+      "name": "Talk"
+    },
+    {
+      "id": 10768,
+      "name": "War & Politics"
+    },
+    {
+      "id": 37,
+      "name": "Western"
+    }
+  ]
+
+const Mgenres= [
+    {
+        "id": 28,
+        "name": "Action"
+      },
+      {
+        "id": 12,
+        "name": "Adventure"
+      },
+      {
+        "id": 16,
+        "name": "Animation"
+      },
+      {
+        "id": 35,
+        "name": "Comedy"
+      },
+      {
+        "id": 80,
+        "name": "Crime"
+      },
+      {
+        "id": 99,
+        "name": "Documentary"
+      },
+      {
+        "id": 18,
+        "name": "Drama"
+      },
+      {
+        "id": 10751,
+        "name": "Family"
+      },
+      {
+        "id": 14,
+        "name": "Fantasy"
+      },
+      {
+        "id": 36,
+        "name": "History"
+      },
+      {
+        "id": 27,
+        "name": "Horror"
+      },
+      {
+        "id": 10402,
+        "name": "Music"
+      },
+      {
+        "id": 9648,
+        "name": "Mystery"
+      },
+      {
+        "id": 10749,
+        "name": "Romance"
+      },
+      {
+        "id": 878,
+        "name": "Science Fiction"
+      },
+      {
+        "id": 10770,
+        "name": "TV Movie"
+      },
+      {
+        "id": 53,
+        "name": "Thriller"
+      },
+      {
+        "id": 10752,
+        "name": "War"
+      },
+      {
+        "id": 37,
+        "name": "Western"
+      }
+]
+
+var sel_genre = [];
+
+const tagsEl= document.getElementById("tags");
+function movie_genre(){
+    tagsEl.innerHTML='';
+    Mgenres.forEach(genre => {
+        var t = document.createElement('div');
+        t.classList.add("tag");
+        t.id = genre.id;
+        t.innerText = genre.name;
+        t.addEventListener("click", ()=>{
+            t.classList.toggle("tag-selected");
+            if(sel_genre.length == 0){
+                sel_genre.push(genre.id);
+            }
+            else{
+                if(sel_genre.includes(genre.id)){
+                    sel_genre.forEach((id, idx) =>{
+                        if(id == genre.id){
+                            sel_genre.splice(idx, 1);
+                        }
+                    })
+                }
+                else{
+                    sel_genre.push(genre.id);
+                }
+            }
+            console.log(sel_genre);
+
+            popularMovies("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US" + '&with_genres='+sel_genre.join(','))
+            
+        })
+        tagsEl.append(t);
+        
+    })
+
+}
+
+var sel_genre2 = [];
+function tv_genre(){
+    tagsEl.innerHTML='';
+    tvgenres.forEach(genre => {
+        var t = document.createElement('div');
+        t.classList.add("tag");
+        t.id = genre.id;
+        t.innerText = genre.name;
+        t.addEventListener("click", ()=>{
+            t.classList.toggle("tag-selected");
+            if(sel_genre2.length == 0){
+                sel_genre2.push(genre.id);
+            }
+            else{
+                if(sel_genre2.includes(genre.id)){
+                    sel_genre2.forEach((id, idx) =>{
+                        if(id == genre.id){
+                            sel_genre2.splice(idx, 1);
+                        }
+                    })
+                }
+                else{
+                    sel_genre2.push(genre.id);
+                }
+            }
+            console.log(sel_genre2);
+            popularTv("https://api.themoviedb.org/3/tv/popular?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1" + '&with_genres='+sel_genre2.join(','))
+            
+        })
+        tagsEl.append(t);
+    })
+}
+
 
 const home= document.querySelectorAll(".home-icon");
 boxiconAnimation(home, "bx-home-alt-2", "bxs-home-alt-2")
@@ -45,6 +262,8 @@ sub.addEventListener("click",()=>{
     })
 })
 
+
+
 const API_KEY="api_key=0595eb5831f66cec3590e055439032cd";
 const BASE_URL="https://api.themoviedb.org/3"
 const IMAGE_URL= "https://image.tmdb.org/t/p/w500"
@@ -66,7 +285,24 @@ var prevPage= 3;
 var lasturl= "";
 var totalPages= 100;
 
+//home button funtionality
+const homeButton = document.getElementById("homeButton");
+homeButton.addEventListener("click", async()=>{
+    const upper= document.getElementById("upper");
+    upper.innerHTML="";
+    upper.innerHTML=`
+    <h1>What's Popular</h1>
+            <div class="toggle">
+                <div class="link whitebg" id="movies"><a href="#">Movies</a></div>
+                <div class="link" id="tv"><a href="#">TV Shows</a></div>
+            </div>
+        `;
+    var url= "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US";
+    popularMovies(url);
+})
+
 async function popularMovies(url){
+    movie_genre();
     whitebgremover2(movies);
     const TVresponse= await fetch(url);
     lasturl= url; 
@@ -151,6 +387,7 @@ async function popularMovies(url){
 }
 
 async function popularTv(url){
+    tv_genre();
     lasturl= url;
     const TVresponse= await fetch(url);
     const data= await TVresponse.json();
@@ -233,10 +470,13 @@ async function popularTv(url){
 
 }
 
+
 //fetching popular movies
 const movies= document.getElementById("movies");
 var url= "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US";
 popularMovies(url);
+
+
 movies.addEventListener("click", async ()=>{
     whitebgremover2(movies);
     popularMovies(url);
@@ -347,7 +587,7 @@ async function search(API_URL, movie){
             let key= queryparams[queryparams.length -1].split("=");
             if(key[0]!="page"){
                 let url = lasturl + "&page=" + page;
-                popularTv(url);
+                searchMovie(url);
             }
             else{
                 key[1]= page.toString();
@@ -355,7 +595,7 @@ async function search(API_URL, movie){
                 queryparams[queryparams.length-1]=a;
                 let b= queryparams.join("&");
                 let url = urlSplit[0] + "?" + b;
-                popularTv(url);
+                searchMovie(url);
             }
         }
     
@@ -498,7 +738,7 @@ async function search(API_URL, movie){
             let key= queryparams[queryparams.length -1].split("=");
             if(key[0]!="page"){
                 let url = lasturl + "&page=" + page;
-                popularTv(url);
+                searchPeople(url);
             }
             else{
                 key[1]= page.toString();
@@ -506,7 +746,7 @@ async function search(API_URL, movie){
                 queryparams[queryparams.length-1]=a;
                 let b= queryparams.join("&");
                 let url = urlSplit[0] + "?" + b;
-                popularTv(url);
+                searchPeople(url);
             }
         }
     
@@ -570,7 +810,7 @@ async function search(API_URL, movie){
             let key= queryparams[queryparams.length -1].split("=");
             if(key[0]!="page"){
                 let url = lasturl + "&page=" + page;
-                popularTv(url);
+                searchCollection(url);
             }
             else{
                 key[1]= page.toString();
@@ -578,7 +818,7 @@ async function search(API_URL, movie){
                 queryparams[queryparams.length-1]=a;
                 let b= queryparams.join("&");
                 let url = urlSplit[0] + "?" + b;
-                popularTv(url);
+                searchCollection(url);
             }
         }
     
