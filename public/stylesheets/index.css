@@ -216,7 +216,7 @@ main{
     display: flex;
     flex-wrap: wrap;
     background-color: rgba(255, 255, 255, 0);
-    justify-content:flex-start;
+    justify-content:flex-end;
 }
 
 .pagination{
@@ -458,8 +458,8 @@ main{
     top: 22%;
     left: 2%;
     height: auto;
-    background-color: rgba(0, 0, 0, 0.3);
-    width: 150px;
+    background-color: rgba(0, 0, 0, 0);
+    width: 170px;
     padding: 8px;
     border-radius: 10px;
     flex-wrap: wrap;
@@ -472,6 +472,7 @@ main{
     padding:2px;
     margin:5px;
     padding-left:10px;
+    background-color: rgba(0, 0, 0, 0.305);
     border-radius: 4px;
     transition: 0.2s;
     font-weight: 500;
@@ -483,7 +484,7 @@ main{
 }
 
 .tag:hover{
-    color:rgb(255, 150, 3);
+    color:aqua;
 }
 
 .tag-selected:hover{

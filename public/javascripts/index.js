@@ -166,6 +166,14 @@ const Mgenres= [
         "name": "Western"
       }
 ]
+function highlightSelected(selection){
+    if(selection.length !=0){
+        selection.forEach(id =>{
+            const highTag = document.getElementById(id);
+            highTag.classList.toggle("tag-selected");
+        })
+    }
+}
 
 var sel_genre = [];
 
@@ -178,9 +186,10 @@ function movie_genre(){
         t.id = genre.id;
         t.innerText = genre.name;
         t.addEventListener("click", ()=>{
-            t.classList.toggle("tag-selected");
+            t.style.color = "red";
             if(sel_genre.length == 0){
                 sel_genre.push(genre.id);
+                
             }
             else{
                 if(sel_genre.includes(genre.id)){
@@ -197,13 +206,15 @@ function movie_genre(){
             console.log(sel_genre);
 
             popularMovies("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US" + '&with_genres='+sel_genre.join(','))
-            
+            highlightSelected(sel_genre);
         })
         tagsEl.append(t);
         
     })
 
 }
+
+
 
 var sel_genre2 = [];
 function tv_genre(){
@@ -232,11 +243,14 @@ function tv_genre(){
             }
             console.log(sel_genre2);
             popularTv("https://api.themoviedb.org/3/tv/popular?api_key=0595eb5831f66cec3590e055439032cd&language=en-US&page=1" + '&with_genres='+sel_genre2.join(','))
-            
+            highlightSelected(sel_genre2);
         })
         tagsEl.append(t);
     })
 }
+
+
+
 
 
 const home= document.querySelectorAll(".home-icon");
@@ -308,7 +322,10 @@ async function popularMovies(url){
     lasturl= url; 
 
     const data= await TVresponse.json();
-
+    if(data.results.length == 0){
+        main.innerHTML = '<h1>No Results Found</h1>';
+        return;
+    }
     const upper= document.getElementById("upper");
     
     console.log(data.results);
@@ -317,6 +334,7 @@ async function popularMovies(url){
     prevPage= currentPage - 1;
     totalPages=data.total_pages;
     const data1= data.results;
+
 
     main.innerHTML= `
         <div class="pagination">
@@ -330,7 +348,7 @@ async function popularMovies(url){
         movieEl.classList.add("movie");
 
         movieEl.innerHTML= ` 
-                <img src="${IMAGE_URL+poster_path}" alt="${title}">
+                <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${title}">
 
                 <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
 
@@ -392,7 +410,10 @@ async function popularTv(url){
     const TVresponse= await fetch(url);
     const data= await TVresponse.json();
     console.log(data.results);
-
+    if(data.results.length == 0){
+        main.innerHTML = '<h1>No Results Found</h1>';
+        return;
+    }
     const upper= document.getElementById("upper");
     
     console.log(data.results);
@@ -416,7 +437,7 @@ async function popularTv(url){
         movieEl.classList.add("movie");
 
         movieEl.innerHTML= ` 
-                <img src="${IMAGE_URL+poster_path}" alt="${name}">
+                <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${name}">
                 <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
                 <div class="movie-info">
                     <h3>${name}</h3>
@@ -509,6 +530,7 @@ function whitebgremover2(str){
 }
 
 
+
 //Searching function...
 const upper= document.getElementById("upper");
 const searching= document.getElementById("search");
@@ -517,6 +539,7 @@ searching.addEventListener("click", ()=> {
     search("https://api.themoviedb.org/3/search/movie?api_key=0595eb5831f66cec3590e055439032cd&query=",value);
     
 })
+
 
 async function search(API_URL, movie){
     upper.innerHTML="";
@@ -539,11 +562,53 @@ async function search(API_URL, movie){
     const people= document.getElementById("speople");
     const coll= document.getElementById("scollection");
 
+    //----------------------------------------------------------- SEARCH MOVIE ----------------------------------------------------------------------
+    var sel_genre3 = []
+    function searchMoviegenre(query){
+        const tagsEl= document.getElementById("tags");
+            tagsEl.innerHTML='';
+            Mgenres.forEach(genre => {
+                var t = document.createElement('div');
+                t.classList.add("tag");
+                t.id = genre.id;
+                t.innerText = genre.name;
+                t.addEventListener("click", ()=>{
+                    t.style.color = "red";
+                    if(sel_genre3.length == 0){
+                        sel_genre3.push(genre.id);
+                        
+                    }
+                    else{
+                        if(sel_genre3.includes(genre.id)){
+                            sel_genre3.forEach((id, idx) =>{
+                                if(id == genre.id){
+                                    sel_genre3.splice(idx, 1);
+                                }
+                            })
+                        }
+                        else{
+                            sel_genre3.push(genre.id);
+                        }
+                    }
+                    console.log(sel_genre3);
+                    searchMovie(query + '&with_genres='+sel_genre3.join(','));
+                    highlightSelected(sel_genre3);
+                })
+                tagsEl.append(t);  
+            })
+            console.log(sel_genre3);
+            
+    }
     async function searchMovie(url){
+        searchMoviegenre(url)
         lasturl = url;
         console.log(url);
         const response= await fetch(url);
         const data= await response.json();
+        if(data.results.length == 0){
+            main.innerHTML = '<h1>No Results Found</h1>';
+            return;
+        }
         console.log(data.results);
 
         currentPage =data.page;
@@ -565,7 +630,7 @@ async function search(API_URL, movie){
             movieEl.classList.add("movie");
     
             movieEl.innerHTML= ` 
-                    <img src="${IMAGE_URL+poster_path}" alt="${title}">
+                    <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${title}">
 
                     <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
     
@@ -616,10 +681,14 @@ async function search(API_URL, movie){
         })
 
     }
-
+    //----------------------------------------------------------- SEARCH TV ----------------------------------------------------------------------
     async function searchTV(url){
         lasturl = url;
         const TVresponse= await fetch(url);
+        if(data.results.length == 0){
+            main.innerHTML = '<h1>No Results Found</h1>';
+            return;
+        }
         const data= await TVresponse.json();
         console.log(data.results);
 
@@ -642,7 +711,7 @@ async function search(API_URL, movie){
             movieEl.classList.add("movie");
     
             movieEl.innerHTML= ` 
-                    <img src="${IMAGE_URL+poster_path}" alt="${name}">
+                    <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${name}">
 
                     <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
     
@@ -696,11 +765,15 @@ async function search(API_URL, movie){
         })
 
     }
-
+    //----------------------------------------------------------- SEARCH PEOPLE ----------------------------------------------------------------------
     async function searchPeople(url){
         lasturl = url;
         const response= await fetch(url);
         const data= await response.json();
+        if(data.results.length == 0){
+            main.innerHTML = '<h1>No Results Found</h1>';
+            return;
+        }
         console.log(data.results);
 
         currentPage =data.page;
@@ -721,7 +794,7 @@ async function search(API_URL, movie){
             movieEl.classList.add("movie");
     
             movieEl.innerHTML= ` 
-                    <img src="${IMAGE_URL+ profile_path}" alt="${name}">
+                    <img src="${profile_path? IMAGE_URL+profile_path: "/images/replacement.jpg"}" alt="${name}">
 
                     <div class="fav2"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
     
@@ -766,12 +839,15 @@ async function search(API_URL, movie){
             }
         })
     }
-
-
+    //----------------------------------------------------------- SEARCH COLLECTION ----------------------------------------------------------------------
     async function searchCollection(url){
         lasturl = url;
         const response= await fetch(url);
         const data= await response.json();
+        if(data.results.length == 0){
+            main.innerHTML = '<h1>No Results Found</h1>';
+            return;
+        }
         console.log(data.results);
     
         const data1= data.results;
@@ -787,7 +863,7 @@ async function search(API_URL, movie){
             movieEl.classList.add("movie");
     
             movieEl.innerHTML= ` 
-                    <img src="${IMAGE_URL+ poster_path}" alt="${name}">
+                    <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${name}">
 
                     <div class="fav2"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
     
