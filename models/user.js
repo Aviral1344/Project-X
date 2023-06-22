@@ -1,9 +1,12 @@
 const mongoose= require('mongoose')
 const bcrypt= require('bcrypt')
 
+const dotenv = require('dotenv')
+dotenv.config()
+
 mongoose.set('strictQuery', true);
-uri="mongodb+srv://aviral_1344:qwerty6789@konekt.xxeqmsg.mongodb.net/?retryWrites=true&w=majority";
-mongoose.connect(uri)
+const uri= process.env.SERVER;
+mongoose.connect(uri);
 var dbs = mongoose.connection
 dbs.on('error',()=>console.log("error in connecting to database"));
 dbs.once('open',()=>console.log("Connection to MongoDB database successful :)"))
