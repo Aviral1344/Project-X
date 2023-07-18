@@ -6,6 +6,9 @@ const app= express();
 const session= require("express-session")
 const User= require("./models/user")
 
+const dotenv = require('dotenv')
+dotenv.config();
+
 app.set("view engine", "ejs")
 
 app.listen(8000,() => {
@@ -21,8 +24,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(session({
-        key:"user_sid",
-        secret:"Random_stuff",
+        key:process.env.KEY,
+        secret:process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie:{

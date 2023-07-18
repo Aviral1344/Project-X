@@ -288,11 +288,6 @@ const main= document.getElementById("main");
 //FRONT PAGE CONTENT(Popular Movies and TV shows)
 
 //pagination
-
-
-
-
-
 var currentPage =1;
 var nextPage= 2;
 var prevPage= 3;
@@ -357,15 +352,30 @@ async function popularMovies(url){
                     <span class="${VoteColour(vote_average)}">${vote_average}</span>
                 </div>
                 <div class="${id}" id="overview">
-                    <h3>Overview</h3>
+                    <h2 class="overview-text">Overview</h2><br>
+                    <i class='bx bx-play-circle bx-sm dummy play-btn' id="${id}"></i>
                     ${overview};
                 </div>
         `
         main.appendChild(movieEl);
+
+        const playid = document.getElementById(id);
+            playid.addEventListener("click", ()=>{
+            let num = id.toString();
+            const url = "https://api.themoviedb.org/3/movie/"+num+"/videos?"+API_KEY;
+            openNav(url);
+        })
     })
+    
     upper.scrollIntoView({behavior: 'smooth'});
     const heart= document.querySelectorAll(".heart-icon");
     boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
+    const play = document.querySelectorAll(".play-btn")
+    boxiconAnimation(play, "dummy", "bx-tada");
+
+
+    
 
     function pageCall(page){
         let urlSplit= lasturl.split("?");
@@ -403,6 +413,7 @@ async function popularMovies(url){
 
     
 }
+
 
 async function popularTv(url){
     tv_genre();
@@ -444,16 +455,27 @@ async function popularTv(url){
                     <span class="${VoteColour(vote_average)}">${vote_average}</span>
                 </div>
                 <div class="${id}" id="overview">
-                    <h3>Overview</h3>
+                    <h2 class="overview-text">Overview</h2><br>
+                    <i class='bx bx-play-circle bx-sm dummy play-btn' id="${id}"></i>
                     ${overview};
                 </div>
         `
         
         main.appendChild(movieEl);
+
+        const playid = document.getElementById(id);
+            playid.addEventListener("click", ()=>{
+            let num = id.toString();
+            const url = "https://api.themoviedb.org/3/tv/"+num+"/videos?"+API_KEY;
+            openNav(url);
+        })
     })
     upper.scrollIntoView({behavior: 'smooth'});
     const heart= document.querySelectorAll(".heart-icon");
     boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
+    const play = document.querySelectorAll(".play-btn")
+    boxiconAnimation(play, "dummy", "bx-tada");
 
     function pageCall(page){
         let urlSplit= lasturl.split("?");
@@ -530,6 +552,84 @@ function whitebgremover2(str){
 }
 
 
+const overlay_content = document.getElementById("overlay-content");
+/* Open when someone clicks on the span element */
+async function openNav(url){
+    fetch(url)
+    .then(response => response.json())
+    .then(vidData=> {
+        console.log(vidData);
+        if(vidData){
+            document.getElementById("myNav").style.width = "100%";
+            if(vidData.results.length > 0){
+                var embed = [];
+                vidData.results.forEach(video =>{
+                    let {key, name, site} = video
+                    if(site == 'YouTube'){
+                        embed.push(`
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" class="embed hide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    `)
+
+                    }
+                    
+                })
+                overlay_content.innerHTML = embed.join('');
+                activeSlide = 0;
+                showVideos();
+
+            }
+            else{
+                overlay_content.innerHTML = `<h1 class="noresult">No Videos Found</h1>`
+            }
+        }
+    })
+}
+  
+  /* Close when someone clicks on the "x" symbol inside the overlay */
+function closeNav(){
+    document.getElementById("myNav").style.width = "0%";
+}
+
+var activeSlide = 0;
+var totalVideos = 0;
+function showVideos(){
+    let embedClasses = document.querySelectorAll(".embed");
+    totalVideos=embedClasses.length;
+    embedClasses.forEach((embedTag, idx) => {
+        if(activeSlide == idx){
+            embedTag.classList.add("show");
+            embedTag.classList.remove("hide");
+        }
+        else{
+            embedTag.classList.remove("show");
+            embedTag.classList.add("hide");
+        }
+    })
+}
+
+const leftarrow = document.getElementById('left-arrow');
+const rightarrow = document.getElementById('right-arrow');
+
+rightarrow.addEventListener("click", ()=>{
+    if(activeSlide < totalVideos-1){
+        activeSlide++;
+    }
+    else{
+        activeSlide = 0;
+    }
+    showVideos()
+})
+
+leftarrow.addEventListener("click", ()=>{
+    if(activeSlide > 0){
+        activeSlide--;
+    }
+    else{
+        activeSlide = totalVideos-1;
+    }
+    showVideos()
+})
+
 
 //Searching function...
 const upper= document.getElementById("upper");
@@ -543,7 +643,7 @@ searching.addEventListener("click", ()=> {
 
 async function search(API_URL, movie){
     upper.innerHTML="";
-    
+    tagsEl.innerHTML='';
     const upperEl=document.createElement("div");
     upperEl.classList.add("search-toggle")
     upperEl.innerHTML=`
@@ -563,44 +663,7 @@ async function search(API_URL, movie){
     const coll= document.getElementById("scollection");
 
     //----------------------------------------------------------- SEARCH MOVIE ----------------------------------------------------------------------
-    var sel_genre3 = []
-    function searchMoviegenre(query){
-        const tagsEl= document.getElementById("tags");
-            tagsEl.innerHTML='';
-            Mgenres.forEach(genre => {
-                var t = document.createElement('div');
-                t.classList.add("tag");
-                t.id = genre.id;
-                t.innerText = genre.name;
-                t.addEventListener("click", ()=>{
-                    t.style.color = "red";
-                    if(sel_genre3.length == 0){
-                        sel_genre3.push(genre.id);
-                        
-                    }
-                    else{
-                        if(sel_genre3.includes(genre.id)){
-                            sel_genre3.forEach((id, idx) =>{
-                                if(id == genre.id){
-                                    sel_genre3.splice(idx, 1);
-                                }
-                            })
-                        }
-                        else{
-                            sel_genre3.push(genre.id);
-                        }
-                    }
-                    console.log(sel_genre3);
-                    searchMovie(query + '&with_genres='+sel_genre3.join(','));
-                    highlightSelected(sel_genre3);
-                })
-                tagsEl.append(t);  
-            })
-            console.log(sel_genre3);
-            
-    }
     async function searchMovie(url){
-        searchMoviegenre(url)
         lasturl = url;
         console.log(url);
         const response= await fetch(url);
@@ -639,12 +702,27 @@ async function search(API_URL, movie){
                         <span class="${VoteColour(vote_average)}">${vote_average}</span>
                     </div>
                     <div class="${id}", id="overview">
-                        <h3>Overview</h3>
+                        <h2 class="overview-text">Overview</h2><br>
+                        <i class='bx bx-play-circle bx-sm dummy play-btn' id="${id}"></i>
                         ${overview};
                     </div>
             `
             main.appendChild(movieEl);
+            const playid = document.getElementById(id);
+            playid.addEventListener("click", ()=>{
+            let num = id.toString();
+            const url = "https://api.themoviedb.org/3/movie/"+num+"/videos?"+API_KEY;
+            openNav(url);
         })
+        })
+
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
+        const play = document.querySelectorAll(".play-btn")
+        boxiconAnimation(play, "dummy", "bx-tada");
+
+        
 
         function pageCall(page){
             let urlSplit= lasturl.split("?");
@@ -685,11 +763,11 @@ async function search(API_URL, movie){
     async function searchTV(url){
         lasturl = url;
         const TVresponse= await fetch(url);
+        const data= await TVresponse.json();
         if(data.results.length == 0){
             main.innerHTML = '<h1>No Results Found</h1>';
             return;
         }
-        const data= await TVresponse.json();
         console.log(data.results);
 
         currentPage =data.page;
@@ -720,15 +798,24 @@ async function search(API_URL, movie){
                         <span class="${VoteColour(vote_average)}">${vote_average}</span>
                     </div>
                     <div class="${id}" id="overview">
-                        <h3>Overview</h3>
+                        <h2 class="overview-text">Overview</h2><br>
+                        <i class='bx bx-play-circle bx-sm dummy play-btn' id="${id}"></i>
                         ${overview};
                     </div>
             `
             
             main.appendChild(movieEl);
+            const playid = document.getElementById(id);
+            playid.addEventListener("click", ()=>{
+            let num = id.toString();
+            const url = "https://api.themoviedb.org/3/tv/"+num+"/videos?"+API_KEY;
+            openNav(url);
+        })
         })
         const heart= document.querySelectorAll(".heart-icon");
         boxiconAnimation(heart, "bx-heart", "bxs-heart");
+        const play = document.querySelectorAll(".play-btn")
+        boxiconAnimation(play, "dummy", "bx-tada");
 
         function pageCall(page){
             let urlSplit= lasturl.split("?");
@@ -989,9 +1076,4 @@ function VoteColour(vote){
     else if(vote>=0 && vote<2.5){
         return "yellow"
     }
-
-
 }
-
-
-
