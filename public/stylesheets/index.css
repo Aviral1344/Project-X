@@ -591,3 +591,10 @@ main{
 .right-arrow{
     right: 10%;
 }
+
+.vid-number{
+    position: absolute;
+    bottom: 8%;
+    right: 50%;
+    color: aliceblue;
+}

@@ -585,7 +585,7 @@ async function openNav(url){
                     let {key, name, site} = video
                     if(site == 'YouTube'){
                         embed.push(`
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" class="embed hide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        <iframe width="720" height="405" src="https://www.youtube.com/embed/${key}" title="${name}" class="embed hide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                     `)
 
                     }
@@ -608,6 +608,7 @@ function closeNav(){
     document.getElementById("myNav").style.width = "0%";
 }
 
+const vidnmbr = document.getElementById('numbr');
 var activeSlide = 0;
 var totalVideos = 0;
 function showVideos(){
@@ -623,10 +624,16 @@ function showVideos(){
             embedTag.classList.add("hide");
         }
     })
+    let vidnum = activeSlide+1;
+    let num = vidnum.toString();
+    let total = totalVideos.toString();
+    vidnmbr.innerHTML= num+" of "+total;
 }
 
 const leftarrow = document.getElementById('left-arrow');
 const rightarrow = document.getElementById('right-arrow');
+
+
 
 rightarrow.addEventListener("click", ()=>{
     if(activeSlide < totalVideos-1){
@@ -635,6 +642,7 @@ rightarrow.addEventListener("click", ()=>{
     else{
         activeSlide = 0;
     }
+    
     showVideos()
 })
 
