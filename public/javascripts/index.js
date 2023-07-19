@@ -253,8 +253,8 @@ function tv_genre(){
 
 
 
-const home= document.querySelectorAll(".home-icon");
-boxiconAnimation(home, "bx-home-alt-2", "bxs-home-alt-2")
+//const home= document.querySelectorAll(".home-icon");
+//boxiconAnimation(home, "bx-home-alt-2", "bxs-home-alt-2")
 
 const searchi= document.querySelectorAll(".search-icon");
 boxiconAnimation(searchi, "bx-search-alt-2", "bxs-search-alt-2")
@@ -294,21 +294,6 @@ var prevPage= 3;
 var lasturl= "";
 var totalPages= 100;
 
-//home button funtionality
-const homeButton = document.getElementById("homeButton");
-homeButton.addEventListener("click", async()=>{
-    const upper= document.getElementById("upper");
-    upper.innerHTML="";
-    upper.innerHTML=`
-    <h1>What's Popular</h1>
-            <div class="toggle">
-                <div class="link whitebg" id="movies"><a href="#">Movies</a></div>
-                <div class="link" id="tv"><a href="#">TV Shows</a></div>
-            </div>
-        `;
-    var url= "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=0595eb5831f66cec3590e055439032cd&language=en-US";
-    popularMovies(url);
-})
 
 async function popularMovies(url){
     movie_genre();
@@ -323,7 +308,6 @@ async function popularMovies(url){
     }
     const upper= document.getElementById("upper");
     
-    console.log(data.results);
     currentPage =data.page;
     nextPage= currentPage + 1;
     prevPage= currentPage - 1;
@@ -420,14 +404,12 @@ async function popularTv(url){
     lasturl= url;
     const TVresponse= await fetch(url);
     const data= await TVresponse.json();
-    console.log(data.results);
     if(data.results.length == 0){
         main.innerHTML = '<h1>No Results Found</h1>';
         return;
     }
     const upper= document.getElementById("upper");
     
-    console.log(data.results);
     currentPage =data.page;
     nextPage= currentPage + 1;
     prevPage= currentPage - 1;
@@ -552,6 +534,42 @@ function whitebgremover2(str){
 }
 
 
+const upper= document.getElementById("upper");
+//---------------------------------------------------------------------------------Popular button funtionality---------------------------------------------------
+const popButton = document.getElementById("popular-button");
+popButton.addEventListener("click", ()=>{
+    location.reload();
+})
+
+//--------------------------------------------------------------------------------trending button functionality--------------------------------------------------
+const trendButton = document.getElementById("trending-button");
+trendButton.addEventListener("click", ()=>{
+    upper.innerHTML=`
+        <h1>Trending Today</h1>
+        <div class="toggle">
+            <div class="link whitebg" id="movies"><a href="#">Movies</a></div>
+            <div class="link" id="tv"><a href="#">TV Shows</a></div>
+        </div>
+    `;
+    url = "https://api.themoviedb.org/3/trending/movie/day?api_key=0595eb5831f66cec3590e055439032cd&language=en-US";
+    url2 = "https://api.themoviedb.org/3/trending/tv/day?api_key=0595eb5831f66cec3590e055439032cd&language=en-US";
+    popularMovies(url);
+    const movies= document.getElementById("movies");
+    movies.classList.add("whitebg");
+    movies.addEventListener("click", async ()=>{
+        popularMovies(url);
+        movies.classList.add("whitebg");
+    })
+
+    const tv= document.getElementById("tv");
+    tv.addEventListener("click", async ()=>{
+        whitebgremover2(tv);
+        popularTv(url2);
+    })
+
+})
+
+
 const overlay_content = document.getElementById("overlay-content");
 /* Open when someone clicks on the span element */
 async function openNav(url){
@@ -632,7 +650,7 @@ leftarrow.addEventListener("click", ()=>{
 
 
 //Searching function...
-const upper= document.getElementById("upper");
+
 const searching= document.getElementById("search");
 searching.addEventListener("click", ()=> {
     const value= document.getElementById("movie-name").value;
@@ -643,7 +661,7 @@ searching.addEventListener("click", ()=> {
 
 async function search(API_URL, movie){
     upper.innerHTML="";
-    tagsEl.innerHTML='';
+    tagsEl.innerHTML="";
     const upperEl=document.createElement("div");
     upperEl.classList.add("search-toggle")
     upperEl.innerHTML=`
@@ -892,6 +910,9 @@ async function search(API_URL, movie){
             main.appendChild(movieEl);
         })
 
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
         function pageCall(page){
             let urlSplit= lasturl.split("?");
             let queryparams= urlSplit[1].split("&");
@@ -960,12 +981,15 @@ async function search(API_URL, movie){
 
                     </div>
                     <div class="${id}" id="overview">
-                        <h3>Overview</h3>
+                        <h2 class="overview-text">Overview</h2><br>
                         ${overview};
                     </div>
             `
             main.appendChild(movieEl);
         })
+
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
 
         function pageCall(page){
             let urlSplit= lasturl.split("?");
