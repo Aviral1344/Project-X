@@ -9,6 +9,7 @@
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'><!--bixicons icon import -->
     </head>
     <body background="/images/bg9.jpg">
+        <div id="dataToSend" class ="favs"><%= curr.fav %></div>
         <div class="popular" id="upper">
             <h1>What's Popular</h1>
             <div class="toggle">
@@ -80,7 +81,7 @@
                 <div class="submenu" id="submenu">
                     <ul>
                         <li><a href="#" class="submenu-link"><i class='bx bxs-user-circle bx-sm'></i><p><%= curr.username %></p><span>></span></a></li>
-                        <li><a href="#" class="submenu-link"><i class='bx bx-heart bx-sm heart-icon' ></i><p>Favourites</p><span>></span></a></li>
+                        <li><a href="#" class="submenu-link" id="dataaa"><i class='bx bx-heart bx-sm heart-icon' ></i><p>Favourites</p><span>></span></a></li>
                         <li><form action="/logout" method="GET"><a href= "/logout" id="logout" class="submenu-link"><i class='bx bxs-log-out-circle bx-sm' ></i><p>Logout</p><span>></span></a></form></li>
                     </ul>
                 </div>

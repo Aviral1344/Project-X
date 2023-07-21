@@ -166,6 +166,28 @@ const Mgenres= [
         "name": "Western"
       }
 ]
+
+// ---------------------------------------------------------------------- favourites function - adding and removies favourites---------------------------------------------------------------------
+
+//making of the favourite array
+var data = document.getElementById("dataToSend").innerHTML;
+var strarr = data.split(",");
+const favarr= strarr.map(numStr => parseInt(numStr));
+console.log(favarr);
+
+
+function sendData(data){
+    fetch("/sendDataToServer", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ data: data })})
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+    })
+    .catch(error => {
+        console.error("Error sending data:", error);
+    });
+}
+
+
 function highlightSelected(selection){
     if(selection.length !=0){
         selection.forEach(id =>{
@@ -329,7 +351,7 @@ async function popularMovies(url){
         movieEl.innerHTML= ` 
                 <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${title}">
 
-                <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
+                <div class="fav"><a href="#" id="${title}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
 
                 <div class="movie-info">
                     <h3>${title}</h3>
@@ -349,6 +371,25 @@ async function popularMovies(url){
             const url = "https://api.themoviedb.org/3/movie/"+num+"/videos?"+API_KEY;
             openNav(url);
         })
+
+        const addfav = document.getElementById(title);
+        addfav.addEventListener("click", ()=>{
+            const favid = id;
+            if(favarr.includes(favid)){
+                favarr.forEach((id, idx) =>{
+                    if(id == favid){
+                        favarr.splice(idx, 1);
+                    }
+                })
+            }
+            else{
+                favarr.push(favid);
+            }
+            console.log(favarr);
+            sendData(favarr)
+        })
+
+        
     })
     
     upper.scrollIntoView({behavior: 'smooth'});
@@ -1108,4 +1149,14 @@ function VoteColour(vote){
     else if(vote>=0 && vote<2.5){
         return "yellow"
     }
+}
+
+function favadder(){
+    // adding elements to the favourite array
+    const addfav = document.getElementById("favclick");
+    addfav.addEventListener("click", ()=>{
+
+        const itemID = addfav.classList.values();
+        console.log("called", itemID);
+    })
 }

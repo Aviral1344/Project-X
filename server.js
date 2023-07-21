@@ -173,5 +173,15 @@ app.post("/signup",(req,res) =>{
     })
 })
 
+app.post("/sendDataToServer", async(req, res) => {
+    const dataFromClient = req.body.data;
+    console.log(dataFromClient);
+    const user= await User.findOne({"email": currentUser.email}).exec();
+
+    user.fav = dataFromClient;
+    user.save();
+    res.json({ message: "Added to favourites!" });
+});
+
 
 

@@ -598,3 +598,7 @@ main{
     right: 50%;
     color: aliceblue;
 }
+
+.favs{
+    display: none;
+}

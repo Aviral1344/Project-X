@@ -31,7 +31,8 @@ const userSchema= mongoose.Schema({
         required: true
     },
     fav:{
-        type:[String],
+        type: [Number],
+        default : [0],
         required: false
     }
 })
