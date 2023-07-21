@@ -167,15 +167,14 @@ const Mgenres= [
       }
 ]
 
-// ---------------------------------------------------------------------- favourites function - adding and removies favourites---------------------------------------------------------------------
-
+// ---------------------------------------------------------------------- favourites function - adding and removies favourites----------------------------------------
 //making of the favourite array
 var data = document.getElementById("dataToSend").innerHTML;
 var strarr = data.split(",");
 const favarr= strarr.map(numStr => parseInt(numStr));
 console.log(favarr);
 
-
+//function that sends data to server
 function sendData(data){
     fetch("/sendDataToServer", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ data: data })})
     .then(response => response.json())
@@ -186,7 +185,7 @@ function sendData(data){
         console.error("Error sending data:", error);
     });
 }
-
+//-----------------------------------------------------------------------------------------------------------------------------------------
 
 function highlightSelected(selection){
     if(selection.length !=0){
@@ -472,7 +471,7 @@ async function popularTv(url){
 
         movieEl.innerHTML= ` 
                 <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${name}">
-                <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
+                <div class="fav"><a href="#" id="${name}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
                 <div class="movie-info">
                     <h3>${name}</h3>
                     <span class="${VoteColour(vote_average)}">${vote_average}</span>
@@ -491,6 +490,23 @@ async function popularTv(url){
             let num = id.toString();
             const url = "https://api.themoviedb.org/3/tv/"+num+"/videos?"+API_KEY;
             openNav(url);
+        })
+
+        const addfav = document.getElementById(name);
+        addfav.addEventListener("click", ()=>{
+            const favid = id;
+            if(favarr.includes(favid)){
+                favarr.forEach((id, idx) =>{
+                    if(id == favid){
+                        favarr.splice(idx, 1);
+                    }
+                })
+            }
+            else{
+                favarr.push(favid);
+            }
+            console.log(favarr);
+            sendData(favarr)
         })
     })
     upper.scrollIntoView({behavior: 'smooth'});
