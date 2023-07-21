@@ -778,7 +778,7 @@ async function search(API_URL, movie){
             movieEl.innerHTML= ` 
                     <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${title}">
 
-                    <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
+                    <div class="fav"><a href="#" id="${title}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
     
                     <div class="movie-info">
                         <h3>${title}</h3>
@@ -793,11 +793,29 @@ async function search(API_URL, movie){
             main.appendChild(movieEl);
             const playid = document.getElementById(id);
             playid.addEventListener("click", ()=>{
-            let num = id.toString();
-            const url = "https://api.themoviedb.org/3/movie/"+num+"/videos?"+API_KEY;
-            openNav(url);
-        })
-        })
+                let num = id.toString();
+                const url = "https://api.themoviedb.org/3/movie/"+num+"/videos?"+API_KEY;
+                openNav(url);
+            })
+
+            const addfav = document.getElementById(title);
+            addfav.addEventListener("click", ()=>{
+                const favid = id;
+                if(favarr.includes(favid)){
+                    favarr.forEach((id, idx) =>{
+                        if(id == favid){
+                            favarr.splice(idx, 1);
+                        }
+                    })
+                }
+                else{
+                    favarr.push(favid);
+                }
+                console.log(favarr);
+                sendData(favarr)
+            })
+        
+    })
 
         const heart= document.querySelectorAll(".heart-icon");
         boxiconAnimation(heart, "bx-heart", "bxs-heart");
@@ -874,7 +892,7 @@ async function search(API_URL, movie){
             movieEl.innerHTML= ` 
                     <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${name}">
 
-                    <div class="fav"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
+                    <div class="fav"><a href="#" id="${name}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
     
                     <div class="movie-info">
                         <h3>${name}</h3>
@@ -890,11 +908,28 @@ async function search(API_URL, movie){
             main.appendChild(movieEl);
             const playid = document.getElementById(id);
             playid.addEventListener("click", ()=>{
-            let num = id.toString();
-            const url = "https://api.themoviedb.org/3/tv/"+num+"/videos?"+API_KEY;
-            openNav(url);
-        })
-        })
+                let num = id.toString();
+                const url = "https://api.themoviedb.org/3/tv/"+num+"/videos?"+API_KEY;
+                openNav(url);
+            })
+
+            const addfav = document.getElementById(name);
+            addfav.addEventListener("click", ()=>{
+                const favid = id;
+                if(favarr.includes(favid)){
+                    favarr.forEach((id, idx) =>{
+                        if(id == favid){
+                            favarr.splice(idx, 1);
+                        }
+                    })
+                }
+                else{
+                    favarr.push(favid);
+                }
+                console.log(favarr);
+                sendData(favarr);
+            })
+    })
         const heart= document.querySelectorAll(".heart-icon");
         boxiconAnimation(heart, "bx-heart", "bxs-heart");
         const play = document.querySelectorAll(".play-btn")
@@ -959,20 +994,37 @@ async function search(API_URL, movie){
             <div class="next" id="next">></div>
         </div>`;
         data1.forEach(movie =>{
-            const {name, profile_path}= movie;
+            const {name, profile_path, id}= movie;
             const movieEl= document.createElement("div");
             movieEl.classList.add("movie");
     
             movieEl.innerHTML= ` 
                     <img src="${profile_path? IMAGE_URL+profile_path: "/images/replacement.jpg"}" alt="${name}">
 
-                    <div class="fav2"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
+                    <div class="fav2"><a href="#" id="${name}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
     
                     <div class="movie-info">
                         <h3>${name}</h3>
                     </div>
             `
             main.appendChild(movieEl);
+
+            const addfav = document.getElementById(name);
+            addfav.addEventListener("click", ()=>{
+                const favid = id;
+                if(favarr.includes(favid)){
+                    favarr.forEach((id, idx) =>{
+                        if(id == favid){
+                            favarr.splice(idx, 1);
+                        }
+                    })
+                }
+                else{
+                    favarr.push(favid);
+                }
+                console.log(favarr);
+                sendData(favarr)
+            })
         })
 
         const heart= document.querySelectorAll(".heart-icon");
@@ -1038,7 +1090,7 @@ async function search(API_URL, movie){
             movieEl.innerHTML= ` 
                     <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${name}">
 
-                    <div class="fav2"><a href="#"><i class='bx bx-heart bx-sm heart-icon' ></i></div>
+                    <div class="fav2"><a href="#" id="${name}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
     
                     <div class="movie-info">
                         <h3>${name}</h3>
@@ -1051,6 +1103,23 @@ async function search(API_URL, movie){
                     </div>
             `
             main.appendChild(movieEl);
+
+            const addfav = document.getElementById(name);
+            addfav.addEventListener("click", ()=>{
+                const favid = id;
+                if(favarr.includes(favid)){
+                    favarr.forEach((id, idx) =>{
+                        if(id == favid){
+                            favarr.splice(idx, 1);
+                        }
+                    })
+                }
+                else{
+                    favarr.push(favid);
+                }
+                console.log(favarr);
+                sendData(favarr)
+            })
         })
 
         const heart= document.querySelectorAll(".heart-icon");
@@ -1165,14 +1234,4 @@ function VoteColour(vote){
     else if(vote>=0 && vote<2.5){
         return "yellow"
     }
-}
-
-function favadder(){
-    // adding elements to the favourite array
-    const addfav = document.getElementById("favclick");
-    addfav.addEventListener("click", ()=>{
-
-        const itemID = addfav.classList.values();
-        console.log("called", itemID);
-    })
 }
