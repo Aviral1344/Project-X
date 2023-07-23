@@ -30,7 +30,22 @@ const userSchema= mongoose.Schema({
         type:String,
         required: true
     },
-    fav:{
+    favmov:{
+        type: [Number],
+        default : [0],
+        required: false
+    },
+    favtv:{
+        type: [Number],
+        default : [0],
+        required: false
+    },
+    favpep:{
+        type: [Number],
+        default : [0],
+        required: false
+    },
+    favcol:{
         type: [Number],
         default : [0],
         required: false

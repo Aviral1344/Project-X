@@ -173,12 +173,42 @@ app.post("/signup",(req,res) =>{
     })
 })
 
-app.post("/sendDataToServer", async(req, res) => {
+app.post("/addToFavMovie", async(req, res) => {
     const dataFromClient = req.body.data;
     console.log(dataFromClient);
     const user= await User.findOne({"email": currentUser.email}).exec();
 
-    user.fav = dataFromClient;
+    user.favmov = dataFromClient;
+    user.save();
+    res.json({ message: "Added to favourites!" });
+});
+
+app.post("/addToFavTv", async(req, res) => {
+    const dataFromClient = req.body.data;
+    console.log(dataFromClient);
+    const user= await User.findOne({"email": currentUser.email}).exec();
+
+    user.favtv = dataFromClient;
+    user.save();
+    res.json({ message: "Added to favourites!" });
+});
+
+app.post("/addToFavpep", async(req, res) => {
+    const dataFromClient = req.body.data;
+    console.log(dataFromClient);
+    const user= await User.findOne({"email": currentUser.email}).exec();
+
+    user.favpep = dataFromClient;
+    user.save();
+    res.json({ message: "Added to favourites!" });
+});
+
+app.post("/addToFavCol", async(req, res) => {
+    const dataFromClient = req.body.data;
+    console.log(dataFromClient);
+    const user= await User.findOne({"email": currentUser.email}).exec();
+
+    user.favcol = dataFromClient;
     user.save();
     res.json({ message: "Added to favourites!" });
 });

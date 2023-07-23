@@ -168,15 +168,33 @@ const Mgenres= [
 ]
 
 // ---------------------------------------------------------------------- favourites function - adding and removies favourites----------------------------------------
-//making of the favourite array
-var data = document.getElementById("dataToSend").innerHTML;
+//making of the favourite array for movies
+var data = document.getElementById("favmov").innerHTML;
 var strarr = data.split(",");
 const favarr= strarr.map(numStr => parseInt(numStr));
 console.log(favarr);
 
+//making of the favourite array for tv
+var data2 = document.getElementById("favtv").innerHTML;
+var strarr2 = data2.split(",");
+const favarr2= strarr2.map(numStr => parseInt(numStr));
+console.log(favarr2);
+
+//making of the favourite array for people
+var data3 = document.getElementById("favpep").innerHTML;
+var strarr3 = data3.split(",");
+const favarr3= strarr3.map(numStr => parseInt(numStr));
+console.log(favarr3);
+
+//making of the favourite array for collection
+var data4 = document.getElementById("favcol").innerHTML;
+var strarr4 = data4.split(",");
+const favarr4= strarr4.map(numStr => parseInt(numStr));
+console.log(favarr4);
+
 //function that sends data to server
-function sendData(data){
-    fetch("/sendDataToServer", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ data: data })})
+function sendData(data, favlist){
+    fetch(favlist, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ data: data })})
     .then(response => response.json())
     .then(result => {
         console.log(result);
@@ -385,7 +403,7 @@ async function popularMovies(url){
                 favarr.push(favid);
             }
             console.log(favarr);
-            sendData(favarr)
+            sendData(favarr, "/addToFavMovie")
         })
 
         
@@ -496,17 +514,17 @@ async function popularTv(url){
         addfav.addEventListener("click", ()=>{
             const favid = id;
             if(favarr.includes(favid)){
-                favarr.forEach((id, idx) =>{
+                favarr2.forEach((id, idx) =>{
                     if(id == favid){
-                        favarr.splice(idx, 1);
+                        favarr2.splice(idx, 1);
                     }
                 })
             }
             else{
-                favarr.push(favid);
+                favarr2.push(favid);
             }
-            console.log(favarr);
-            sendData(favarr)
+            console.log(favarr2);
+            sendData(favarr2, "/addToFavTv")
         })
     })
     upper.scrollIntoView({behavior: 'smooth'});
@@ -812,7 +830,7 @@ async function search(API_URL, movie){
                     favarr.push(favid);
                 }
                 console.log(favarr);
-                sendData(favarr)
+                sendData(favarr, "/addToFavMovie")
             })
         
     })
@@ -916,18 +934,18 @@ async function search(API_URL, movie){
             const addfav = document.getElementById(name);
             addfav.addEventListener("click", ()=>{
                 const favid = id;
-                if(favarr.includes(favid)){
-                    favarr.forEach((id, idx) =>{
+                if(favarr2.includes(favid)){
+                    favarr2.forEach((id, idx) =>{
                         if(id == favid){
-                            favarr.splice(idx, 1);
+                            favarr2.splice(idx, 1);
                         }
                     })
                 }
                 else{
-                    favarr.push(favid);
+                    favarr2.push(favid);
                 }
-                console.log(favarr);
-                sendData(favarr);
+                console.log(favarr2);
+                sendData(favarr2, "/addToFavTv");
             })
     })
         const heart= document.querySelectorAll(".heart-icon");
@@ -1012,18 +1030,18 @@ async function search(API_URL, movie){
             const addfav = document.getElementById(name);
             addfav.addEventListener("click", ()=>{
                 const favid = id;
-                if(favarr.includes(favid)){
-                    favarr.forEach((id, idx) =>{
+                if(favarr3.includes(favid)){
+                    favarr3.forEach((id, idx) =>{
                         if(id == favid){
-                            favarr.splice(idx, 1);
+                            favarr3.splice(idx, 1);
                         }
                     })
                 }
                 else{
-                    favarr.push(favid);
+                    favarr3.push(favid);
                 }
-                console.log(favarr);
-                sendData(favarr)
+                console.log(favarr3);
+                sendData(favarr3, "/addToFavpep")
             })
         })
 
@@ -1107,18 +1125,18 @@ async function search(API_URL, movie){
             const addfav = document.getElementById(name);
             addfav.addEventListener("click", ()=>{
                 const favid = id;
-                if(favarr.includes(favid)){
-                    favarr.forEach((id, idx) =>{
+                if(favarr4.includes(favid)){
+                    favarr4.forEach((id, idx) =>{
                         if(id == favid){
-                            favarr.splice(idx, 1);
+                            favarr4.splice(idx, 1);
                         }
                     })
                 }
                 else{
-                    favarr.push(favid);
+                    favarr4.push(favid);
                 }
-                console.log(favarr);
-                sendData(favarr)
+                console.log(favarr4);
+                sendData(favarr4, "/addToFavcol")
             })
         })
 
@@ -1235,3 +1253,292 @@ function VoteColour(vote){
         return "yellow"
     }
 }
+
+const open_favs = document.getElementById("open-favs");
+open_favs.addEventListener("click", async()=>{
+    main.innerHTML="";
+    tagsEl.innerHTML='';
+
+    upper.innerHTML="";
+    tagsEl.innerHTML="";
+    const upperEl=document.createElement("div");
+    upperEl.classList.add("search-toggle")
+    upperEl.innerHTML=`
+        <div class="link whitebg" id="sMovie"><a href="#">Movies</a></div>
+        <div class="link" id="stv"><a href="#">TV Shows</a></div>
+        <div class="link" id="speople"><a href="#">People</a></div>
+        <div class="link" id="scollection"><a href="#">Collection</a></div>
+        `;
+    upper.appendChild(upperEl);
+
+    const movies = document.getElementById("sMovie");
+    const tv = document.getElementById("stv");
+    const people = document.getElementById("speople");
+    const coll = document.getElementById("scollection");
+
+
+    main.innerHTML="";
+    favarr.forEach((element, idx) => {
+        if(idx != 0){
+            const url = "https://api.themoviedb.org/3/movie/"+element.toString()+"?"+API_KEY;
+            console.log(url);
+            favMovies(url);
+        }
+    })
+
+    async function favMovies(url){
+        const data =  await fetch(url).then(response => response.json());
+        console.log(data);
+
+        const {title, poster_path, vote_average, overview, id} = data;
+    
+        const movieEl= document.createElement("div");
+        movieEl.classList.add("movie");
+    
+        movieEl.innerHTML= ` 
+            <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${title}">
+
+            <div class="fav"><a href="#" id="${title}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
+    
+            <div class="movie-info">
+                <h3>${title}</h3>
+                <span class="${VoteColour(vote_average)}">${vote_average}</span>
+            </div>
+            <div class="${id}", id="overview">
+                <h2 class="overview-text">Overview</h2><br>
+                <i class='bx bx-play-circle bx-sm dummy play-btn' id="${id}"></i>
+                ${overview};
+            </div>
+        `
+        main.appendChild(movieEl);
+
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
+        const play = document.querySelectorAll(".play-btn")
+        boxiconAnimation(play, "dummy", "bx-tada");
+
+        const playid = document.getElementById(id);
+        playid.addEventListener("click", ()=>{
+            let num = id.toString();
+            const url = "https://api.themoviedb.org/3/movie/"+num+"/videos?"+API_KEY;
+            openNav(url);
+        })
+
+        const addfav = document.getElementById(title);
+        addfav.addEventListener("click", ()=>{
+            const favid = id;
+            if(favarr.includes(favid)){
+                favarr.forEach((id, idx) =>{
+                    if(id == favid){
+                        favarr.splice(idx, 1);
+                    }
+                })
+            }
+            else{
+                favarr.push(favid);
+            }
+            console.log(favarr);
+            sendData(favarr, "/addToFavMovie")
+        })
+
+        
+    }
+
+    async function favtv(url){
+        const data =  await fetch(url).then(response => response.json());
+        console.log(data);
+
+        const {name, poster_path, vote_average, overview, id} = data;
+    
+        const movieEl= document.createElement("div");
+        movieEl.classList.add("movie");
+    
+        movieEl.innerHTML= ` 
+            <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${name}">
+
+            <div class="fav"><a href="#" id="${name}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
+    
+            <div class="movie-info">
+                <h3>${name}</h3>
+                <span class="${VoteColour(vote_average)}">${vote_average}</span>
+            </div>
+            <div class="${id}", id="overview">
+                <h2 class="overview-text">Overview</h2><br>
+                <i class='bx bx-play-circle bx-sm dummy play-btn' id="${id}"></i>
+                ${overview};
+            </div>
+        `
+        main.appendChild(movieEl);
+
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
+        const play = document.querySelectorAll(".play-btn")
+        boxiconAnimation(play, "dummy", "bx-tada");
+
+        const playid = document.getElementById(id);
+        playid.addEventListener("click", ()=>{
+            let num = id.toString();
+            const url = "https://api.themoviedb.org/3/tv/"+num+"/videos?"+API_KEY;
+            openNav(url);
+        })
+
+        const addfav = document.getElementById(name);
+        addfav.addEventListener("click", ()=>{
+            const favid = id;
+            if(favarr2.includes(favid)){
+                favarr2.forEach((id, idx) =>{
+                    if(id == favid){
+                        favarr2.splice(idx, 1);
+                    }
+                })
+            }
+            else{
+                favarr2.push(favid);
+            }
+            console.log(favarr2);
+            sendData(favarr2, "/addToFavTv");
+        })
+    }
+
+    async function favpep(url){
+        const data =  await fetch(url).then(response => response.json());
+        console.log(data);
+
+        const {name, profile_path, id}= data;
+        const movieEl= document.createElement("div");
+        movieEl.classList.add("movie");
+        movieEl.innerHTML= ` 
+            <img src="${profile_path? IMAGE_URL+profile_path: "/images/replacement.jpg"}" alt="${name}">
+
+            <div class="fav2"><a href="#" id="${name}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
+    
+            <div class="movie-info">
+                <h3>${name}</h3>
+            </div>
+        `
+        main.appendChild(movieEl);
+
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
+
+        const addfav = document.getElementById(name);
+        addfav.addEventListener("click", ()=>{
+            const favid = id;
+            if(favarr3.includes(favid)){
+                favarr3.forEach((id, idx) =>{
+                    if(id == favid){
+                        favarr3.splice(idx, 1);
+                    }
+                })
+            }
+            else{
+                favarr3.push(favid);
+            }
+            console.log(favarr3);
+            sendData(favarr3, "/addToFavpep")
+        })
+    }
+
+    async function favcoll(url){
+        const data =  await fetch(url).then(response => response.json());
+        console.log(data);
+
+        const {name, poster_path, overview, id}= data;
+        const movieEl= document.createElement("div");
+        movieEl.classList.add("movie");
+    
+        movieEl.innerHTML= ` 
+            <img src="${poster_path? IMAGE_URL+poster_path: "/images/replacement.jpg"}" alt="${name}">
+
+            <div class="fav2"><a href="#" id="${name}"><i class='bx bx-heart bx-sm heart-icon' ></i></a></div>
+    
+            <div class="movie-info">
+                <h3>${name}</h3>
+            </div>
+
+            <div class="${id}" id="overview">
+                <h2 class="overview-text">Overview</h2><br>
+                ${overview};
+            </div>
+            `
+        main.appendChild(movieEl);
+
+        const addfav = document.getElementById(name);
+        addfav.addEventListener("click", ()=>{
+            const favid = id;
+            if(favarr4.includes(favid)){
+                favarr4.forEach((id, idx) =>{
+                    if(id == favid){
+                        favarr4.splice(idx, 1);
+                    }
+                })
+            }
+            else{
+                favarr4.push(favid);
+            }
+            console.log(favarr4);
+            sendData(favarr4, "/addToFavcol")
+        })
+
+        const heart= document.querySelectorAll(".heart-icon");
+        boxiconAnimation(heart, "bx-heart", "bxs-heart");
+    }
+
+    movies.addEventListener("click", async()=>{
+        whitebgremover(movies);
+        main.innerHTML="";
+        favarr.forEach((element, idx) => {
+            if(idx != 0){
+                const url = "https://api.themoviedb.org/3/movie/"+element.toString()+"?"+API_KEY;
+                console.log(url);
+                favMovies(url);
+            }
+        })
+        
+    })
+
+    tv.addEventListener("click",async ()=>{
+        whitebgremover(tv);
+        main.innerHTML="";
+        favarr2.forEach((element, idx) => {
+            if(idx != 0){
+                const url = "https://api.themoviedb.org/3/tv/"+element.toString()+"?"+API_KEY;
+                console.log(url);
+                favtv(url);
+            }
+        })
+        
+    })
+
+    people.addEventListener("click", async()=>{
+        whitebgremover(people);
+        main.innerHTML="";
+        favarr3.forEach((element, idx) => {
+            if(idx != 0){
+                const url = "https://api.themoviedb.org/3/person/"+element.toString()+"?"+API_KEY;
+                console.log(url);
+                favpep(url);
+            }
+            
+        })
+    })
+
+    coll.addEventListener("click", async()=>{
+        whitebgremover(coll);
+        main.innerHTML="";
+        favarr4.forEach((element, idx) => {
+            if(idx != 0){
+                const url = "https://api.themoviedb.org/3/collection/"+element.toString()+"?"+API_KEY;
+                console.log(url);
+                favcoll(url);
+            }
+            
+        })
+        
+    })
+
+    
+
+})
